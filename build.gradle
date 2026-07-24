@@ -1,0 +1,48 @@
+plugins {
+  id 'groovy'
+  id 'application'
+}
+
+application {
+  mainClass = 'org.example.Main'
+  applicationDefaultJvmArgs = [
+    '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+    '--add-opens', 'java.base/java.util=ALL-UNNAMED'
+  ]
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+  mavenLocal()
+
+  maven {
+    credentials {
+      username "$rbArtifactoryUser"
+      password "$rbArtifactoryPassword"
+    }
+    url "https://rb-artifactory.bosch.com/artifactory/maven-central-remote/"
+  }
+
+  maven {
+    credentials {
+      username "$rbArtifactoryUser"
+      password "$rbArtifactoryPassword"
+    }
+    url = "https://rb-artifactory.bosch.com/artifactory/bhp-eat-spexjava-local/"
+  }
+}
+
+dependencies {
+  implementation 'org.pkl-lang:pkl-config-java:0.28.0'
+
+  implementation 'org.codehaus.groovy:groovy-all:3.0.25'
+  testImplementation platform('org.junit:junit-bom:6.0.0')
+  testImplementation 'org.junit.jupiter:junit-jupiter'
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+  useJUnitPlatform()
+}

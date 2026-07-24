@@ -1,0 +1,26 @@
+amends "Schema.pkl"
+
+configuration = new PVServer {
+  children = new {
+    new Procs {
+      name = "procs"
+      children = new {
+        for( i : Int in IntSeq(1,3)) {
+          new SocketConnector {
+            name = "netConnector\(i)"
+            portNo = 5000 + i
+          }
+        }
+        new SocketConnector {
+          name = "webSocket"
+          portNo = 5010
+          loggingEnabled = 0
+        }
+        new ErrorHandler {
+          name = "errorHandler"
+          hConnector = "netConnector"
+        }
+      }
+    }
+  }
+}

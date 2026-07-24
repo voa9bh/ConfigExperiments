@@ -1,0 +1,239 @@
+/// Configuration schema for system objects
+module SpexConfig
+
+configuration: PVServer = new PVServer {
+  name = "test"
+}
+
+/// Base class for system objects with common properties
+abstract class PVObject {
+  name: String = ""
+  handle: Int = 0
+  dimension: Int = 1
+  classType: String?
+  children: Listing<PVObject>?
+}
+
+open class PVServer extends PVObject {
+  classType = "PVServer"
+  handle = 1
+}
+
+/// Socket connector for network communication
+open class SocketConnector extends PVObject {
+  classType = "SocketConnector"
+  portNo: (Int|String)?
+  loggingEnabled: (Int|String)?
+  protocol: (Int|String)?
+}
+
+/// Lookup service
+class Lookup extends PVObject {}
+
+/// Error handler
+class ErrorHandler extends PVObject {
+  classType = "ErrorHandler"
+  hConnector: (String|Int)?
+}
+
+/// Console for process management
+class PVConsole extends PVObject {
+  hConnector: (String|Int|List)?
+}
+
+/// Clock service
+class Clock extends PVObject {}
+
+/// TLI (Test Language Interface) object
+class TLI extends PVObject {
+  hConnector: List?
+  virHandle: String?
+  rdHandle: String?
+  tdHandle: String?
+  consoleHandle: String?
+  classPath: String?
+  hErrorHandlerObj: String?
+  callbackObject: String?
+  printStepID: (Int|String)?
+  loadCheckerMode: (Int|String)?
+}
+
+/// Callback text handler
+class CallbackText extends PVObject {
+  hConnector: List?
+}
+
+/// Memory long object
+class MemLong extends PVObject {
+  value: (Int|String)?
+  security: String?
+}
+
+/// Memory long 64-bit object
+class MemLong64 extends PVObject {
+  value: (Int|String)?
+}
+
+/// Memory text object
+class MemText extends PVObject {
+  value: String?
+}
+
+/// Callback long object
+class CallbackLong extends PVObject {
+  hConnector: (String|Int)?
+}
+
+/// PV Client for remote communication
+class PVClient extends PVObject {
+  hostName: String?
+  port: (Int|String)?
+  useBigPacket: (Int|String)?
+  useBinaryResponse: (Int|String)?
+  useFuturePacket: (Int|String)?
+  loggingEnabled: (Int|String)?
+  protocol: (Int|String)?
+}
+
+/// Type data host interface
+class TDHostInterface extends PVObject {
+  tdRootHandle: String?
+  rdRootHandle: String?
+  cellFTPUserName: String?
+  cellFTPPassword: String?
+  cellResultDir: String?
+  localResultDir: String?
+  lineNo: (Int|String)?
+  stationNo: (Int|String)?
+  parallelStationNo: (Int|String)?
+  stationFunction: String?
+  partIdentifyFlag: (Int|String)?
+  standalone: (Int|String)?
+  copyTaskIdleTime: (Int|String)?
+  typeDataUrl: String?
+  resultDataUrl: String?
+}
+
+/// Nexeed type data host interface
+class TDHostInterfaceNexeed extends PVObject {
+  tdRootHandle: String?
+  rdRootHandle: String?
+  cellFTPUserName: String?
+  cellFTPPassword: String?
+  cellResultDir: String?
+  localResultDir: String?
+  lineNo: (Int|String)?
+  stationNo: (Int|String)?
+  parallelStationNo: (Int|String)?
+  lineName: String?
+  typeDataUrl: String?
+  resultDataUrl: String?
+  stationFunction: String?
+  partIdentifyFlag: (Int|String)?
+  standalone: (Int|String)?
+  identifierResolver: String?
+}
+
+/// CS Interface for control system integration
+class CSInterface extends PVObject {
+  hCallbackObj: String?
+  codeBase: String?
+  typeDataFile: String?
+  testProgramFile: String?
+  prokistFile: String?
+  hTDHostObj: String?
+  hRdObj: String?
+  hTliObj: String?
+  hErrorHandlerObj: String?
+  hClockObj: String?
+  TimeoutTLI: (Int|String)?
+  hGetDataObj: String?
+  hProkistObj: String?
+  hVirNestNrObj: String?
+}
+
+/// Processes object containing connectors and handlers
+class Procs extends PVObject {
+  classType = "Procs"
+}
+
+/// Development environment
+class Dev extends PVObject {}
+
+/// System timer
+class Timer extends PVObject {}
+
+/// PV System
+class PVSystem extends PVObject {}
+
+/// Prokist remote object
+class ProkistRemote extends PVObject {
+  gatewayHandle: String?
+  forwardHandle: (String|Int)?
+}
+
+/// Virtual object repository
+class Vir extends PVObject {}
+
+/// Reference to another object
+class Reference extends PVObject {
+  forwardHandle: String?
+}
+
+/// Buffer for double precision values
+class BufferDouble extends PVObject {
+  capacity: (Int|String)?
+  gatewayHandle: String?
+  forwardHandle: (String|Int)?
+}
+
+/// Double buffer
+class BufDouble extends PVObject {}
+
+/// Remote object reference
+class RemoteObject extends PVObject {
+  gatewayHandle: String?
+  remoteObjectName: String?
+}
+
+/// Data collector for system monitoring
+class DataCollector extends PVObject {}
+
+/// Scripted long value
+class ScriptedLong extends PVObject {
+  getScript: String?
+  setScript: String?
+}
+
+/// Scripted double value
+class ScriptedDouble extends PVObject {
+  getScript: String?
+}
+
+/// Scripted text value
+class ScriptedText extends PVObject {
+  hX: String?
+  getScript: String?
+  setScript: String?
+}
+
+/// Transform object for data transformation
+class Transform extends PVObject {
+  hSource: String?
+  offset: (Int|String|Float)?
+  gain: (Int|String|Float)?
+}
+
+/// Type data header
+class TypeDataHeader extends PVObject {}
+
+/// Result data header
+class ResultDataHeader extends PVObject {
+  hConnector: List?
+  fixedTraceIDs: String?
+}
+
+/// Root configuration object
+class Configuration {
+  classType: String = "Configuration"
+}
