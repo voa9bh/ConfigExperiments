@@ -1,18 +1,26 @@
 amends "SchemaMapping.pkl"
-
-configuration {
-  children {
-    ["dev"] = new Dev {
-      children {
-        ["timer"] = new Timer {}
-        ["system"] = new PVSystem {}
-        for (i: Int in IntSeq(1, 3)) {
-          ["pvClient\(i)"] = new PVClient {
-            hostName = "123.4.3.4"
-            port = 5002 + i
-          }
+// ── Pass 1: base definition ──
+local config = new Mapping<String,PVObject> {
+  ["dev"] = new Dev {
+    children {
+      ["timer"] = new Timer {}
+      ["system"] = new PVSystem {}
+      for (i: Int in IntSeq(1, 3)) {
+        ["pvClient\(i)"] = new PVClient {
+          hostName = "123.4.3.4"
+          port = 5002 + i
         }
       }
+    }
+  }
+}
+// ── Pass 2: override existing values by amending the base ──
+// NOTE: use `["key"] { ... }` (amend), not `["key"] = new ...` (replace).
+// You can't define `configuration` twice, so amend the local `config` instead.
+configuration = (config) {
+  ["dev"] {
+    children {
+      ["pvClient2"] { port = 8000 }
     }
   }
 }

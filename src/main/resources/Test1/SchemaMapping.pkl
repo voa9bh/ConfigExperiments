@@ -1,13 +1,15 @@
 module SpexConfig
 
-configuration: PVServer = new PVServer {
-  name = "test"
+configuration: Mapping<String,PVObject> = new {
+  ["dev"] = new Dev { }
+
 }
 
 /// Base class for system objects with common properties
 abstract class PVObject {
 
-  name: String
+  /// Populated automatically from the mapping key (see `fixupNames`).
+  name: String = ""
 
   handle: Int = 0
   dimension: Int = 1
@@ -74,4 +76,24 @@ open class Timer extends PVObject {
 
 open class PVSystem extends PVObject {
   classType = "PVSystem"
+}
+
+/// Recursively assigns each object's `name` from its mapping key.
+/// This lets config authors specify the name once (as the mapping key)
+/// instead of repeating it in a `name` property.
+local function fixupChildren(m: Mapping<String, PVObject>): Mapping<String, PVObject> =
+  m.toMap().map((key, node) ->
+    Pair(key, (node) {
+      name = key
+      children = if (node.children != null) fixupChildren(node.children!!) else node.children
+    })
+  ).toMapping()
+
+/// The configuration with names resolved from mapping keys.
+/// Use this for programmatic access (e.g. `resolved.children["dev"].name`).
+resolved: Mapping<String,PVObject> = fixupChildren(configuration)
+
+// Render the resolved tree so output contains the derived names.
+output {
+  value = resolved
 }
