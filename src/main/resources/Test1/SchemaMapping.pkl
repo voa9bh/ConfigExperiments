@@ -1,5 +1,7 @@
 module SpexConfig
 
+import "pkl:xml"
+
 configuration: Mapping<String,PVObject> = new {
   ["dev"] = new Dev { }
 
@@ -81,19 +83,46 @@ open class PVSystem extends PVObject {
 /// Recursively assigns each object's `name` from its mapping key.
 /// This lets config authors specify the name once (as the mapping key)
 /// instead of repeating it in a `name` property.
-local function fixupChildren(m: Mapping<String, PVObject>): Mapping<String, PVObject> =
+///
+/// Used for programmatic access via `resolved` (see below).
+local function fixupNames(m: Mapping<String, PVObject>): Mapping<String, PVObject> =
   m.toMap().map((key, node) ->
     Pair(key, (node) {
       name = key
-      children = if (node.children != null) fixupChildren(node.children!!) else node.children
+      children = if (node.children != null) fixupNames(node.children!!) else node.children
     })
   ).toMapping()
 
+/// Recursively converts the object tree into XML `<object>` elements.
+///
+/// Each `PVObject` renders as:
+/// `<object className="..." dimension="..." handle="..." name="...">`
+/// with its children nested inside. The mapping key becomes the `name`
+/// attribute (so names don't need to be repeated in the config).
+local function fixupChildren(m: Mapping<String, PVObject>): Listing = new {
+  for (key, node in m) {
+    (xml.Element("object")) {
+      attributes {
+        ["className"] = node.classType
+        ["dimension"] = node.dimension
+        ["handle"] = node.handle
+        ["name"] = key
+      }
+      when (node.children != null) {
+        ...fixupChildren(node.children!!)
+      }
+    }
+  }
+}
+
 /// The configuration with names resolved from mapping keys.
 /// Use this for programmatic access (e.g. `resolved.children["dev"].name`).
-resolved: Mapping<String,PVObject> = fixupChildren(configuration)
+resolved: Mapping<String,PVObject> = fixupNames(configuration)
 
-// Render the resolved tree so output contains the derived names.
+// Render the object tree as XML with a `<configuration>` root element.
 output {
-  value = resolved
+  value = new Dynamic { ...fixupChildren(configuration) }
+  renderer = new xml.Renderer {
+    rootElementName = "configuration"
+  }
 }
