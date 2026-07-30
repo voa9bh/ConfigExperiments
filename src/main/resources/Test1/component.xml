@@ -1,0 +1,829 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<components name="spex-tl" version="1.18.0-DEV-SNAPSHOT">
+  <PVClass name="ErrorHandler" description="ErrorHandler to forward and log error messages" possibleParents="[all]">
+    <PVProperty name="hCallback" description="handle of callback object attached to error handler" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hCSInterface" description="handle of csInterface object attached to error handler." configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hConnector" description="handle of (net)Connector object attached to error handler" configType="OPTIONAL" dataType="PVObject" dimension="8"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Lookup" description="Lookup Object to register listeners for specific actions" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="LookupResult" description="Result object which holds the references of the registered objects" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PVClient" description="PVClient for remote connection to other test systems (PVGateway" possibleParents="[all]">
+    <PVProperty name="port" description="TCP/IP port number" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="hostName" description="hostname or IP address of remote device" configType="REQUIRED" dataType="String" defaultValue="localhost" pattern="^([a-zA-Z][\\w\\.]*)|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})"/>
+    <PVProperty name="protocol" description="protocol (0=plain Socket" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="loggingEnabled" description="log mode for communication: 0=no logging 1=full logging 2=debug 3=trace" configType="OPTIONAL" dataType="int" min="0" max="3"/>
+    <PVProperty name="retryCount" description="number of attempts to connect to the target" configType="OPTIONAL" dataType="int" defaultValue="100"/>
+    <PVProperty name="timeout" description="timeout after a retry is started (in ms)" configType="OPTIONAL" dataType="int" defaultValue="2500"/>
+    <PVProperty name="description" description="description of the connection (only information)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hLookup" description="handle of lookup object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="asyncEnabled" description="set to support async messages" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hConnector" description="[optional]: The SocketConnector for sending asynchronous messages (needed if asyncEnabled=1)" configType="OPTIONAL" dataType="PVObject" dimension="16"/>
+    <PVProperty name="hSubProcess" description="[optional]: The process object which administrates the application to which" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="resendAfterReconnect" description="0=No resend (e.g. if expected value will not be valid)" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="useBinaryResponse" description="1=client will ask for binary responses for faster transfer" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="useBigPacket" description="1=client will use big packet for faster transfer" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="isConnected" description="1=client is connected" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="errorBuffer" description="last error message" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="useFuturePacket" description="use future packages" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SubProcess" description="Manages the microspex instances via the system tool spexProcessCtrl object.  +&#10;        Must be same name as microspex application (e.g. spex-rt" possibleParents="[all]">
+    <PVProperty name="workDir" description="working directory for the SubProcess" configType="OPTIONAL" dataType="String" defaultValue="."/>
+    <PVProperty name="startCommand" description="the command line to start the process" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="restartTimeout" description="timeout for restarting the process" configType="OPTIONAL" dataType="int" defaultValue="3000"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SocketConnection" description="object for communication of the speX with the outside world via socket connection. +&#10;        (Netty Implementation" possibleParents="[all]">
+    <PVProperty name="securityLevel" description="the security level" configType="HIDDEN" dataType="int"/>
+    <PVProperty name="loggingEnabled" description="log mode: 0=no logging 1=full logging 2=log CS connection" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="bigEnabled" description="0=standard package 1=using big package" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SocketConnector" description="object for communication of the speX with the outside world via socket connection. +&#10;        It Manages the Connections to the Clients. The Connection is implemented in SocketConnection.  +&#10;        This is the ParentObject for the Connections.&#10;" possibleParents="[all]">
+    <PVProperty name="maxConnection" description="the maximum number of accepted connections" configType="HIDDEN" dataType="int" defaultValue="256"/>
+    <PVProperty name="portNo" description="the socket port number" configType="OPTIONAL" dataType="int" defaultValue="5002"/>
+    <PVProperty name="loggingEnabled" description="log mode: 0=no logging 1=full logging 2=log CS connection 3=trace" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="protocol" description="protocol (0=plain Socket (default)" configType="OPTIONAL" dataType="int" min="0" max="3"/>
+    <PVProperty name="securityLevel" description="security Level" configType="OPTIONAL" dataType="int" min="0" max="3"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="CallbackDouble" description="Callback of type double" possibleParents="[all]">
+    <PVProperty name="hConnector" description="handle of the connector" configType="REQUIRED" dataType="PVObject" dimension="8"/>
+    <PVProperty name="threshold" description="threshold for minimum change to last set value" configType="OPTIONAL" dataType="double" defaultValue="0.0"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="CallbackLong" description="Callback of type long&#10;" possibleParents="[all]">
+    <PVProperty name="hConnector" description="handle of the connector" configType="REQUIRED" dataType="PVObject" dimension="8"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="CallbackText" description="Callback of type text" possibleParents="[all]">
+    <PVProperty name="hConnector" description="handle of the connector" configType="REQUIRED" dataType="PVObject" dimension="8"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="MemDouble" description="Memory variable of type double" possibleParents="[all]">
+    <PVProperty name="value" description="double value" configType="OPTIONAL" dataType="double" defaultValue="0.0"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="MemLong" description="MemLong virtual variable" possibleParents="[all]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="MemLong64" description="MemLong 64-bit virtual variable" possibleParents="[all]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="long"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="MemText" description="MemText virtual variable" possibleParents="[all]">
+    <PVProperty name="value" description="string value" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Reference" description="Reference to another object. set forwardHandle and or gatewayHandle" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="OPTIONAL" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="RemoteObject" description="RemoteObject for reference to Objects on other systems" possibleParents="[all]">
+    <PVProperty name="remoteObjectName" description="name of the remote Object" configType="REQUIRED" dataType="String" defaultValue="/pvServer"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="OPTIONAL" dataType="PVObject" classFilter="[PVClient]"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+  </PVClass>
+  <PVClass name="PVMidi" description="Midi Controller for TS3000&#10;" possibleParents="[all]">
+    <PVProperty name="value" description="last message" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="deviceName" description="device Name" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hConnector" description="async message handlers" configType="OPTIONAL" dataType="PVObject" dimension="8"/>
+    <PVProperty name="hTimer" description="handle to timer" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="initLevel" description="initLevel (0-3)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="MQTTClient" description="MQTT PVClient for remote connection (Gateway" possibleParents="[all]">
+    <PVProperty name="requestTopic" description="topic to send requests" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="responseTopic" description="topic to receive response" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="asyncTopic" description="topic to receive async response" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hostName" description="host name of the mqtt broker" configType="REQUIRED" dataType="String" defaultValue="localhost"/>
+    <PVProperty name="portNo" description="the socket port number" configType="OPTIONAL" dataType="int" defaultValue="1883"/>
+    <PVProperty name="mqttVersion" description="version of mqtt connection (3 or 5)" configType="OPTIONAL" dataType="int" defaultValue="5" selectOptions="[&quot;3&quot;"/>
+    <PVProperty name="username" description="username of the mqtt broker" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="password" description="password of the mqtt broker (encrypted)" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="qos" description="quality of service 0-2" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="retained" description="retain last message on broker" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="connectionTimeout" description="timeout to wait for connection in ms" configType="OPTIONAL" dataType="int" defaultValue="5000"/>
+    <PVProperty name="isConnected" description="1 if connection is established" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hConnector" description="[optional]: The SocketConnectors for sending asynchronous messages" configType="OPTIONAL" dataType="PVObject" dimension="8"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="MQTTConnection" description="object for communication of the speX with the outside world via mqtt connection.&#10; Child of MQTTConnector and implements the connections" possibleParents="[MQTTConnector]">
+    <PVProperty name="topicName" description="name of topic" configType="OPTIONAL" dataType="String" defaultValue="#"/>
+    <PVProperty name="securityLevel" description="the security level" configType="HIDDEN" dataType="int" defaultValue="1"/>
+    <PVProperty name="qos" description="quality of service 0-2" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="retained" description="retain last message on broker" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="asyncEnabled" description="!=0 if asynchronous Messages are enabled" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="contextEnabled" description="!=0 if context adding is enabled" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="loggingEnabled" description="log mode: 0=no logging 1=full logging" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="context" description="the current context of the connection (e.g. /pvServer/dev)" configType="OPTIONAL" dataType="String" defaultValue="/pvServer"/>
+    <PVProperty name="asyncObjects" description="semicolon separated list of objects that send async messages. Children are automatically added as well. If the list is empty" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="syncEnabled" description="!=0 if synchronous Messages are enabled" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="responseConnection" description="deprecated: all objects are accessible. To hide features of system use securityLevel." configType="HIDDEN" dataType="PVObject"/>
+    <PVProperty name="asyncResponseConnection" description="used for async connection. The connection (topic) where the async messages are sent" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="maxPacketSize" description="used for responses. if response is bigger it will be sent in chunks" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="mode" description="mode 1 = read 2 = write 3 = readWrite (default)" configType="OPTIONAL" dataType="int" defaultValue="3"/>
+    <PVProperty name="useRequestResponsePattern" description="set to 1 to use the CS request response pattern with checking of sender and target" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="requestResponseSourceID" description="Id of the source (the ControlSystem)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="requestResponseTargetID" description="Id of the source (the TestSystem)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="MQTTConnector" description="object for communication of the speX with the outside world via mqtt connection.&#10; It Manages the Connections to the Clients. The Connection is implemented in MQTTConnection.&#10; This is the ParentObject for the Connections.&#10;" possibleParents="[all]">
+    <PVProperty name="hostName" description="the security level" configType="HIDDEN" dataType="String" defaultValue="localhost"/>
+    <PVProperty name="portNo" description="the socket port number" configType="OPTIONAL" dataType="int" defaultValue="1883"/>
+    <PVProperty name="mqttVersion" description="version of mqtt connection (3 or 5)" configType="OPTIONAL" dataType="int" defaultValue="5"/>
+    <PVProperty name="username" description="username of the mqtt broker" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="password" description="password of the mqtt broker (encrypted)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="CustomObject" description="Custom object with custom code for Visu APIs&#10;" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PVLEDControllerPI" description="LED controller" possibleParents="[all]">
+    <PVProperty name="value" description="DESCRIPTION MISSING" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="prokistCardConnection" description="DESCRIPTION MISSING" configType="OPTIONAL" dataType="String" defaultValue="/pvServer/procs/ProkistCard/ProkistCardTask"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="HBM" description="hbm object class" possibleParents="[all]">
+    <PVProperty name="value" description="values of the hbm channels" configType="OPTIONAL" dataType="int" dimension="129"/>
+    <PVProperty name="available" description="availability of the channels" configType="OPTIONAL" dataType="int" dimension="129"/>
+    <PVProperty name="activated" description="if channel is activated" configType="OPTIONAL" dataType="int" dimension="129"/>
+    <PVProperty name="calValue" description="calibration value" configType="OPTIONAL" dataType="int" dimension="129"/>
+    <PVProperty name="initLevel" description="init level of the device" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="mode" description="measuring mode of the device" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="sampleRate" description="sample rate" configType="OPTIONAL" dataType="int" defaultValue="2400"/>
+    <PVProperty name="sampleSize" description="sample size" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="preTrigSize" description="size of pre trigger" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hostName" description="host name or ip address" configType="OPTIONAL" dataType="String" defaultValue="192.168.1.2"/>
+    <PVProperty name="errorBuffer" description="last error text" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="sampleRateCode" description="code for current sample rate" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="trigActivated" description="if trigger is activated" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hTimer" description="handle to the timer object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="expiryTime" description="time in ms before new values are taken" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="HBMChannel" description="HBM Channel Driver Object" possibleParents="[all]">
+    <PVProperty name="value" description="value of channel" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="channel" description="channel number" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="subchannel" description="subchannel number" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="virtualchannel" description="virtual channel number" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="factor" description="factor for value correction" configType="OPTIONAL" dataType="double" defaultValue="1.0"/>
+    <PVProperty name="offset" description="offset for value correction" configType="OPTIONAL" dataType="double"/>
+    <PVProperty name="unit" description="unit" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="HBMChannelDb" description="HBM Channel Driver Object (double" possibleParents="[all]">
+    <PVProperty name="value" description="value of channel" configType="OPTIONAL" dataType="double" defaultValue="0.0"/>
+    <PVProperty name="channel" description="channel number" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="subchannel" description="subchannel number" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="virtualchannel" description="virtual channel number" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="factor" description="factor for value correction" configType="OPTIONAL" dataType="double" defaultValue="1.0"/>
+    <PVProperty name="offset" description="offset for value correction" configType="OPTIONAL" dataType="double"/>
+    <PVProperty name="unit" description="unit" configType="OPTIONAL" dataType="String" defaultValue="?"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ActiveObject" description="reloadable object with message handler&#10;" possibleParents="[all]">
+    <PVProperty name="classFile" description="The source for the Object to load at initialisation" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="CSEtherCATInterface" description="CSEtherCATInterface class" possibleParents="[CSInterface]">
+    <PVProperty name="hPVClient" description="handle of PVClient to speX-Cpp realtime part (e.g. pvcRT)" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="parentPath" description="path parent object of Ethercat Objects" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="timeoutForRtConnection" description="Timeout for RT Connection in s (must be at least 20)" configType="HIDDEN" dataType="int" defaultValue="300" min="20"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="CSInterface" description="CSInterface class&#10;" possibleParents="[all]">
+    <PVProperty name="codeBase" description="the path where to find typedata" configType="REQUIRED" dataType="String" pattern="/r1/.*"/>
+    <PVProperty name="typeDataFile" description="the name of the type data" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="testProgramFile" description="the name of the test program" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="prokistFile" description="the name of the prokist" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hWatchDogObj" description="handle of the PV-object to toggle the WatchDog" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="taskIdleTime" description="idle Time of the task child object" configType="OPTIONAL" dataType="int" defaultValue="1000"/>
+    <PVProperty name="hTDHostObj" description="handle of the TDHostInterface object" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="hRDObj" description="handle of the Resultdata object" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="hTLIObj" description="handle of the TLI object" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="hCallbackObj" description="handle of the Callback object. If emtpy and using CSEtherCATInterface will set it automatically on startup" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hResetSeqObj" description="handle of the ResetSeq object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hErrorHandlerObj" description="handle of the ErrorHandler object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hClockObj" description="handle of the Clock object" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="hGetDataObj" description="handle of the DataCollector object" configType="HIDDEN" dataType="PVObject"/>
+    <PVProperty name="hProkistObj" description="handle of the Prokist object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hVirNestNrObj" description="handle of the virtual object with the Testing Nest Number for the RD" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="timeoutTLI" description="timeout to control the TLI" configType="OPTIONAL" dataType="int" defaultValue="50000"/>
+    <PVProperty name="tdHostname" description="hostname to load Typedata from" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="tdWorkingDirectory" description="workingDirectory to load Typedata from" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="tdUsername" description="username to load Typedata from" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="tdPassword" description="password to load Typedata from (encrypted)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="tdUseActiveMode" description="FTP mode for downloading typedata file. When tdHostname is a LDS" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Clock" description="clock object in Format yyyyMMddHHmmsscc" possibleParents="[all]">
+    <PVProperty name="maxOffset" description="max offset in seconds" configType="OPTIONAL" dataType="int" defaultValue="604800"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="DynamicObject" description="reloadable object&#10;" possibleParents="[all]">
+    <PVProperty name="classFile" description="The source for the Object to load at initialisation" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="classPath" description="ClassPath separated with semicolon" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="args" description="arguments for the object (parameter=value)" configType="OPTIONAL" dataType="String" dimension="32"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="FTPCopyTask" description="automated ftp copy task (extends PVFTPClient" possibleParents="[all]">
+    <PVProperty name="idleTime" description="cycle time of copy" configType="OPTIONAL" dataType="int" defaultValue="1000"/>
+    <PVProperty name="userName" description="ftp user name" configType="OPTIONAL" dataType="String" defaultValue="ftp_login"/>
+    <PVProperty name="password" description="ftp password (encrypted)" configType="OPTIONAL" dataType="String" defaultValue="krp8CWKGctA="/>
+    <PVProperty name="workingDirectory" description="working directory" configType="OPTIONAL" dataType="String" defaultValue="/"/>
+    <PVProperty name="sourceDirectory" description="source directory" configType="OPTIONAL" dataType="String" defaultValue="."/>
+    <PVProperty name="sourceIncludes" description="ant style includes (e.g. **/*.png,**/*.txt)" configType="OPTIONAL" dataType="String" defaultValue="**/*.*"/>
+    <PVProperty name="sourceExcludes" description="ant style excludes (e.g. **/*.pj)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PVConsole" description="Object for Implementation of TLI read an write functions&#10;" possibleParents="[all]">
+    <PVProperty name="hConnector" description="handle of the connector object" configType="REQUIRED" dataType="PVObject" dimension="16" classFilter="SocketConnector,MQTTConnector"/>
+    <PVProperty name="maxRow" description="maximum number or rows" configType="OPTIONAL" dataType="int" defaultValue="25"/>
+    <PVProperty name="maxCol" description="maximum number or columns" configType="OPTIONAL" dataType="int" defaultValue="80"/>
+    <PVProperty name="highWaterMark" description="maximum number of used data in deque" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="useDecoupling" description="set to 1 to use buffered output decoupling" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PressureSetter" description="pressure setter for handling abs flowcharts&#10;" possibleParents="[all]">
+    <PVProperty name="delay" description="delay in ms" configType="OPTIONAL" dataType="int" defaultValue="80"/>
+    <PVProperty name="hTimer" description="handle to the timer object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hY2x" description="handle to y2x (low pressure)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hY3x" description="handle to y3x (high pressure)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hY4x" description="handle to y4x (relieve)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hY5x" description="handle to y5x (shut off)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hPressureValue" description="handle to the measurement object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="smartMode" description="1=optimize switching of valves" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Randomizer" description="Get a randomized value between min and max&#10;" possibleParents="[all]">
+    <PVProperty name="min" description="min value" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="max" description="max value" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SMBConnection" description="SMB connection (spex only" possibleParents="[all]">
+    <PVProperty name="connectionUrl" description="the url of the connection e.g. smb:" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="mountPoint" description="the mount point e.g. /mnt/smb-lds" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Task" description="Task (the Groovy Version" possibleParents="[all]">
+    <PVProperty name="hLookup" description="handle of the Lookup" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hMessageHandler" description="handle of the MessageHandler" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="messageHandlerIndex" description="index of the MessageHandler" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="idleTime" description="idle time for cyclic calling" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hConnector" description="used in send() when receiver is empty" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="TDHostInterfaceNexeed" description="TDHostInterface for reading and writing typedata and resultdata.&#10; It is the interface to the Nexeed Classic system&#10;" possibleParents="[all]">
+    <PVProperty name="nexeedCommunicationTimeout" description="timeout for nexeed communication in ms" configType="OPTIONAL" dataType="int" defaultValue="60000"/>
+    <PVProperty name="identifierResolver" description="gString how to resolve the result data identifier" configType="OPTIONAL" dataType="String" defaultValue="${logicalID}"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="TDHostInterface" description="TDHostInterface for reading and writing typedata and resultdata.&#10; It is the interface to the Promaster/MES&#10;" possibleParents="[all]">
+    <PVProperty name="tdRootHandle" description="the parent objects of the typedata objects to create" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="rdRootHandle" description="the parent objects of the resultdata objects to create" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="lineName" description="the name of the line (must be manually configured in config.groovy file!)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="cellName" description="the name of the cell (from typedata-xml file)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="projectName" description="the name of the project - info required by Promaster" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="projectVersion" description="the release date of the project - info required by Promaster" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="cellAddress" description="the Host name of the Cell (for FTP connection) - must be manually configured." configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="cellFTPUserName" description="the user name for the FTP connection" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="cellFTPPassword" description="the password for the FTP connection (encrypted)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="cellResultDir" description="the directory where to put the result data on the cell (must be manually configured.)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="ftpTdServer" description="the Server where to get the additional typedata (e.g. test program" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="ftpTdDir" description="the directory where to get the additional typedata files (e.g. test program" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="localResultDir" description="the directory where to put the result data locally (before copying to cell)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="localProgramDir" description="the directory where to put the test programs and other stuff" configType="OPTIONAL" dataType="String" defaultValue="/r1/daten/typdaten"/>
+    <PVProperty name="eraseLocalProgramDir" description="when set" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="lineNo" description="the line Number (for WTStationInfo)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="stationNo" description="the station Number (for WTStationInfo)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="parallelStationNo" description="the parallel station Number (for WTStationInfo)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="copyTaskIdleTime" description="the idle time of the tdHostInterface_task" configType="OPTIONAL" dataType="int" defaultValue="2000"/>
+    <PVProperty name="stationFunction" description="the station function text (for WTStationInfo)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="partIdentifyFlag" description="0=not identified(MV,ZS) 1=identified(ABS,EHB,DS5)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hErrorHandleObj" description="handle of the systems error handler object (is searched at init)" configType="HIDDEN" dataType="PVObject"/>
+    <PVProperty name="deleteTypedataFile" description="delete typedata file after loading it (to avoid working with an old typedata set)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="standalone" description="set for testing without cell (does not send result data to host)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="maxTraceIDDataLength" description="maximum length of project path for TraceID" configType="OPTIONAL" dataType="int" defaultValue="29"/>
+    <PVProperty name="extendedTraceID" description="if 0 then only the filename is put to TraceID. Otherwise the project path with the last maxTraceIDDataLength signs is put to traceID" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="resultDataFormat" description="default 101 -&gt; normal result for promaster" configType="OPTIONAL" dataType="int" defaultValue="101"/>
+    <PVProperty name="pmLineName" description="the line name in new format to send MQTT data -&gt; see promaster LineName  -&gt; needs to be defined in config.properties file!!!" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hConnector" description="handle for mqtt connection to send data via MQTT must have connection process and or measurement" configType="OPTIONAL" dataType="PVObject" classFilter="MQTTConnection"/>
+    <PVProperty name="keepFTPConnection" description="1=keep the FTP connection open. Automatically set to 1 if copyTaskIdleTime &lt; 1000ms" configType="HIDDEN" dataType="int"/>
+    <PVProperty name="typeDataUrl" description="url to retrieve type data alternatively to ftp connection containing protocol (smb or ftp)   username password share" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="resultDataUrl" description="url to send result data to when not using classic configuration" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="useDoubleValuesOnly" description="set to 1 to only use Result/SetValue Double for numeric results" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="TLI" description="Test Language Interpreter (Groovy Version" possibleParents="[all]">
+    <PVProperty name="virHandle" description="handle of the vir" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="tdHandle" description="handle of the td" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="rdHandle" description="handle of the rd - must be type ResultDataHeader" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="consoleHandle" description="handle of the console" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="enableDebug" description="Enables the debug mode in script mode. (0=disable" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="callbackObject" description="handle of the Callback Object" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="callbackIndex" description="index of the callback object" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="docLevel" description="documentation level used for terminal panel outputs on SimpleConsole" configType="OPTIONAL" dataType="int" defaultValue="10"/>
+    <PVProperty name="hErrorHandlerObj" description="handle of the ErrorHandler object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="classPath" description="classPath for tli to add special Libs. Entries separated by semicolon" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="tempJarDir" description="tempDir for jared Test Programs" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="versionCheckerLevel" description="Version checker Level: 0 = deactivated" configType="OPTIONAL" dataType="int" defaultValue="1" min="0" max="2"/>
+    <PVProperty name="consoleLogPattern" description="defines what to print to console output" configType="HIDDEN" dataType="String" defaultValue="%m"/>
+    <PVProperty name="startCheckerMode" description="0= no checks" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="loadCheckerMode" description="0= no checks" configType="OPTIONAL" dataType="int" defaultValue="3"/>
+    <PVProperty name="printStepID" description="1= print [stepID] when in step/endstep" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hConnector" description="[optional]: The SocketConnector for sending asynchronous messages (needed if asyncEnabled=1)" configType="OPTIONAL" dataType="PVObject" dimension="16"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="AOMessage" description="Object that connects a message of another object (mainly to show the available methods" possibleParents="[ActiveObject]">
+    <PVProperty name="hObject" description="object that receives the message. If not set" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="actionNumber" description="the action number of the message" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="description" description="description of the message" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="requestFormat" description="request Format" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="responseFormat" description="response Format" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="security" description="security Flags" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="AOProperty" description="Object that connects a message of another object (mainly to show the available methods" possibleParents="[ActiveObject]">
+    <PVProperty name="hObject" description="object that receives the AOProperty. If not set" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="description" description="description of the AOProperty" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="dataType" description="dataType of the AOProperty" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="propertyHandle" description="propertyHandle (number) of the AOProperty" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="security" description="security Flags" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="BitAccess" description="BitAccess&#10;" possibleParents="[all]">
+    <PVProperty name="hSource" description="Object to read" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="byteAddress" description="Byteaddress to read" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="bitAddress" description="Bitaddress to read" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="bitSize" description="Number of bits to read" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="BufferDouble" description="BufferDouble class (replacing deprecated BufLong and BufDouble" possibleParents="[all]">
+    <PVProperty name="capacity" description="Maximum size of the buffer. Has to be defined in config.xml" configType="REQUIRED" dataType="int" min="0"/>
+    <PVProperty name="timeFactor" description="Factor to convert the given time values to microseconds" configType="OPTIONAL" dataType="double" defaultValue="1.0"/>
+    <PVProperty name="siUnit" description="SI Unit of the values (e.g. [N]=Newton" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="siFactor" description="Factor to get values in SI Unit (Example: if siUnit=A and value are in [mA] then siFactor=0.001)" configType="OPTIONAL" dataType="double" defaultValue="1.0"/>
+    <PVProperty name="title" description="Title of the Buffer. Optional. If empty buffer name itself will be used" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="description" description="Description of buffer values. For Visu usage." configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hConnector" description="SocketConnector for sending asychronous messages (e.g. for Visu)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="state" description="User defined state of buffer" configType="HIDDEN" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="DOMethod" description="Object that connects a message of another object (mainly to show the available methods" possibleParents="[DynamicObject]">
+    <PVProperty name="hObject" description="object that receives the message. If not defined" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="description" description="description of the message" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="requestFormat" description="request Format" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="responseFormat" description="response Format" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="methodHandle" description="method handle" configType="HIDDEN" dataType="int"/>
+    <PVProperty name="security" description="security Flags" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="DOProperty" description="Object that connects a message of another object (mainly to show the available methods" possibleParents="[DynamicObject]">
+    <PVProperty name="hObject" description="object that receives the DOProperty. If not defined" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="description" description="description of the DOProperty" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="dataType" description="dataType of the DOProperty" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="propertyHandle" description="propertyHandle of the DOProperty" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="security" description="security flags" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ResourceManager" description="Overwatch for LSController handles the setting of level on connected test systems&#10;" possibleParents="[all]">
+    <PVProperty name="expirationTime" description="expiration time for requested level in ms" configType="OPTIONAL" dataType="int" defaultValue="10000"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ResultDataHeader" description="Result Data Header (rd" possibleParents="[all]">
+    <PVProperty name="fixedTraceIDs" description="trace ids to automatically create on init separated with semicolons" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="setToSkippedOnInit" description="automatically skip all results on init" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hConnector" description="handle of the connector" configType="OPTIONAL" dataType="PVObject" dimension="8" classFilter="SocketConnector,MQTTConnector"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ResultValueCurve" description="Result object that handles curves" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ResultValueDouble" description="Result value of type double" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ResultValueLong" description="Result value of type long" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ResultValueText" description="Result value of type text" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ResultValueTextArray" description="Result object that handles dynamic string arrays" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="RingBufferText" description="RingBufferText&#10;" possibleParents="[all]">
+    <PVProperty name="capacity" description="capacity" configType="REQUIRED" dataType="int" defaultValue="1000"/>
+    <PVProperty name="overwriteIfFull" description="do overwrite oldest if buffer is full with 1. If 0" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="logFilePrefix" description="logFilePrefix" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ScriptedDouble" description="Can do everything you wanted to do ever with get(" possibleParents="[all]">
+    <PVProperty name="getScript" description="script to call if get is called" configType="OPTIONAL" dataType="String" defaultValue="return 42.0"/>
+    <PVProperty name="setScript" description="script to call if set is called" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hW" description="Object to use in a skript as w" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hX" description="Object to use in a skript as x" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hY" description="Object to use in a skript as y" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hZ" description="Object to use in a skript as z" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ScriptedLong" description="Can do everything you wanted to do ever with get(" possibleParents="[all]">
+    <PVProperty name="getScript" description="script to call if get is called" configType="OPTIONAL" dataType="String" defaultValue="return 42;"/>
+    <PVProperty name="setScript" description="script to call if set is called" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hW" description="Object to use in a skript as w" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hX" description="Object to use in a skript as x" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hY" description="Object to use in a skript as y" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hZ" description="Object to use in a skript as z" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ScriptedText" description="Can do everything you wanted to do ever with get(" possibleParents="[all]">
+    <PVProperty name="getScript" description="script to call if get is called" configType="OPTIONAL" dataType="String" defaultValue="return fourty-two"/>
+    <PVProperty name="setScript" description="script to call if set is called" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hW" description="Object to use in a skript as w" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hX" description="Object to use in a skript as x" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hY" description="Object to use in a skript as y" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hZ" description="Object to use in a skript as z" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SetValueCurve" description="Set object that handles curves" possibleParents="[all]">
+    <PVProperty name="dispUnitConvValX" description="Unit convertion value for X Axis" configType="OPTIONAL" dataType="double"/>
+    <PVProperty name="dispUnitConvValY" description="Unit convertion value for Y Axis" configType="OPTIONAL" dataType="double"/>
+    <PVProperty name="hostUnitConvFactX" description="Host convertion value for X Axis" configType="OPTIONAL" dataType="double"/>
+    <PVProperty name="hostUnitConvFactY" description="Host convertion value for Y Axis" configType="OPTIONAL" dataType="double"/>
+    <PVProperty name="dispUnitX" description="Unit for X Axis" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="dispUnitY" description="Unit for Y Axis" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="OID" description="Database Object ID" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SetValueDouble" description="Set value of type long" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SetValueLong" description="Set value of type long" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SetValueText" description="Set value of type text (string" possibleParents="[all]">
+    <PVProperty name="value" description="the value" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="OID" description="the objectID" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="SetValueTextArray" description="Result object that handles dynamic string arrays" possibleParents="[all]">
+    <PVProperty name="value" description="the value" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="OID" description="the objectID" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="StateMachine" description="StateMachine Object to perform functions of finite state machines on ts2000.&#10;" possibleParents="[all]">
+    <PVProperty name="value" description="current value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hTaskObj" description="handle of the task child object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="taskCycleTime" description="the cycle how often the time will be checked" configType="OPTIONAL" dataType="int" defaultValue="1000"/>
+    <PVProperty name="startState" description="the start State of the StateMachine" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="StateMachineState" description="StateMachineState Object to perform functions of finite state machines on ts2000." possibleParents="[StateMachine]">
+    <PVProperty name="value" description="current value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hCondition" description="handle to a variable (long) that has to be true to change the state (transition)." configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hReactionObject" description="when condition is true" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="reactionValue" description="the reaction value set to the reactionObject" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="nextState" description="name of the next state" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="TraceID" description="Trace ID for ResultData" possibleParents="[all]">
+    <PVProperty name="comp" description="traceIdNo" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="id1" description="id1" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="id2" description="id2" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="id3" description="id3" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="id4" description="id4" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="TypeDataHeader" description="Structure Element Type Data Header (td" possibleParents="[PVServer]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Timer" description="Timer used to get time in us and wait in ms" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="ProkistRemote" description="Prokist Card Driver Object (Remote version" possibleParents="[all]">
+    <PVProperty name="value" description="actual value" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="pathNo" description="device path no." configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="labelCount" description="count of labels" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="devSlot" description="device slot (not used)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hLogger" description="Handle of DataFridge. 0 = Logging disabled." configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="devName" description="Device name" configType="OPTIONAL" dataType="String" defaultValue="ms9_1"/>
+    <PVProperty name="pccName" description="pcc name" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="errorBuffer" description="last Error test" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="defaultTimeout" description="default timeout" configType="OPTIONAL" dataType="int" defaultValue="2500"/>
+    <PVProperty name="caseSensitivity" description="label names case sensitive" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hardwareRevisionLevel" description="Hardware version of the prokist card. 3=MS09 4=MS09N (CAN)" configType="OPTIONAL" dataType="int" defaultValue="3"/>
+    <PVProperty name="driverRevision" description="driver Revision" configType="OPTIONAL" dataType="String" defaultValue="0.0"/>
+    <PVProperty name="comploadRevision" description="compload Revision" configType="OPTIONAL" dataType="String" defaultValue="0.0"/>
+    <PVProperty name="timeoutProkistStop" description="timeout Prokist Stop [ms]" configType="OPTIONAL" dataType="int" defaultValue="5000"/>
+    <PVProperty name="timeoutProkistRun" description="timeout Prokist Run [ms]" configType="OPTIONAL" dataType="int" defaultValue="5000"/>
+    <PVProperty name="timeoutProkistLoad" description="timeout Prokist Load [ms]" configType="OPTIONAL" dataType="int" defaultValue="20000"/>
+    <PVProperty name="timeoutProkistSendCmd" description="timeout Prokist Send Command [ms]" configType="OPTIONAL" dataType="int" defaultValue="5000"/>
+    <PVProperty name="loggingEnabled" description="timeout Prokist Send Command [ms]" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="pccFilePrefix" description="pccFilePrefix for load PCC" configType="OPTIONAL" dataType="String" defaultValue="ftp"/>
+    <PVProperty name="advancedLoggingEnabled" description="advanced Logging" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="driverMinorRevision" description="driver Minor Revision" configType="OPTIONAL" dataType="String" defaultValue="0.0.0"/>
+    <PVProperty name="holdActualProkistOSVersion" description="hold actual ProkistosVersion for Debugging" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="showTransceiveBytes" description="show/hide all Bytes for Input and Parameters at Logging" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="XCM" description="XCM skeleton class (connect over PVClient to Prokist-Hardware" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="XCMChannel" description="XCMChannel makes it possible to connect to IO-Channels on a Xcm-Module in a easily way" possibleParents="[all]">
+    <PVProperty name="osObjectName" description="object name defined in ProkistOS" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="timeout" description="timeout for all method calls to the XCMos" configType="OPTIONAL" dataType="int" defaultValue="2000"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PVSystem" description="System object" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PVFTPClient" description="FTP client using apache commons net for simply ftp actions!&#10;" possibleParents="[all]">
+    <PVProperty name="hostname" description="hostname" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="connMode" description="connection mode: 0=PORT" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PVSFTPClient" description="SFTP client using jsch directly for sftp actions!&#10;" possibleParents="[all]">
+    <PVProperty name="timeout" description="the timeout value for the SFTP session in [ms]. Default 5000ms" configType="OPTIONAL" dataType="int" defaultValue="5000"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PVSocketClient" description="Socket connection to remote device" possibleParents="[all]">
+    <PVProperty name="hostName" description="ip address or name of the host" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="portNumber" description="port number of the host connection" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="terminationBytes" description="termination bytes (e.g. 0A0D -&gt; CR LF)" configType="OPTIONAL" dataType="String" defaultValue="0A0D"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Com" description="Structure-element for communication objects" possibleParents="[PVServer]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="DataCollector" description="DataCollector Object used to send up to 32 long values in one response  +&#10;        (to relieve QCD" possibleParents="[all]">
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="DataCollectorItem" description="DataCollectorItem to add under DataCollector" possibleParents="[DataCollector]">
+    <PVProperty name="hDataObj" description="the the data Object" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="unit" description="the unit of the data Object" configType="REQUIRED" dataType="String"/>
+    <PVProperty name="minValue" description="min value for visualisation" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="maxValue" description="max value for visualisation" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Dev" description="Structure-element for device/hardware objects" possibleParents="[PVServer,Sys]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Guard" description="Guard Object (to react on out of border values" possibleParents="[Supervisor]">
+    <PVProperty name="hGuardedObj" description="Guarded Object" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="hReactionObj" description="Object that is set to reactionValue if tolerance is out of range for toleranceTime" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="reactionValue" description="The value which will be set in the reaction Object" configType="REQUIRED" dataType="double"/>
+    <PVProperty name="lowerTolerance" description="lower Tolerance" configType="REQUIRED" dataType="double"/>
+    <PVProperty name="upperTolerance" description="upper Tolerance" configType="REQUIRED" dataType="double"/>
+    <PVProperty name="toleranceTime" description="The time which the Guard Object can be out of the tolerance without an error occurs" configType="REQUIRED" dataType="int"/>
+    <PVProperty name="silent" description="if silent=0 guard-obj throws an alarm." configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="LogicAnd" description="LogicAnd Array - getter makes an And of all siblings" possibleParents="[all]">
+    <PVProperty name="hInput" description="Objects to and" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="LogicCompare" description="LogicCompare - compares left an right object value" possibleParents="[all]">
+    <PVProperty name="hLeft" description="left side of compare value" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="hRight" description="right side of compare value" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="iRight" description="integer compare value (used when hRight is empty)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="comparator" description="comparator operation &gt;,&lt;,=,==,!=,&lt;&gt;,&gt;=,&lt;= are possible" configType="REQUIRED" dataType="String" selectOptions="{&quot;&gt;&quot;,&quot;&lt;&quot;,&quot;=&quot;,&quot;==&quot;,&quot;!=&quot;,&quot;&lt;&gt;&quot;,&quot;&gt;=&quot;,&quot;&lt;=&quot;}"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="LogicOr" description="LogicOr Array - getter makes an Or of all siblings" possibleParents="[all]">
+    <PVProperty name="hInput" description="Objects to and" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Method" description="Object that connects a method of another object with get and set" possibleParents="[all]">
+    <PVProperty name="hObject" description="handle of the object to call" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="hMethod" description="handle of the method to call" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="PVSemaphore" description="object providing semaphore functionality via acquire(" possibleParents="[all]">
+    <PVProperty name="permits" description="number of permits" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Procs" description="Structure-element for procs objects" possibleParents="[PVServer,Sys]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Property" description="Object that connects a PROPERTY of another object with get and set" possibleParents="[all]">
+    <PVProperty name="hObject" description="handle of the object to access" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="objectIndex" description="index of the object to access" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="hProperty" description="handle of the property of the object to access" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="propertyIndex" description="index of the property of the object to access" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Recorder" description="Recording data object values into a buffer" possibleParents="[all]">
+    <PVProperty name="active" description="active/deactivate recording" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="RecorderItem" description="Item to add under a Recorder" possibleParents="[Recorder]">
+    <PVProperty name="sampleTime" description="time between two samples (in ms)" configType="OPTIONAL" dataType="int" defaultValue="10"/>
+    <PVProperty name="hDataObject" description="the object to sample from" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="hBufObj" description="the buffer to store the samples" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="timeUnitFactor" description="time unit factor for recording (1=us(default)" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Sequence" description="Sequence of set commands to objects (text or long" possibleParents="[Virtual]">
+    <PVProperty name="value" description="integer value (to set if not a text)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="object" description="handle to the object to set" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="textValue" description="value to set" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Supervisor" description="Main object for guard Objects&#10;" possibleParents="[all]">
+    <PVProperty name="taskCycleTime" description="the cycle time of the task in ms" configType="OPTIONAL" dataType="int" defaultValue="1000"/>
+    <PVProperty name="taskPriority" description="the task priority (low) 1..10 (high)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Sys" description="Structure-element to Structure your Systems if you use more than one in a configuration file" possibleParents="[PVServer]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Transform" description="transform virtual variable (source*gain+offset" possibleParents="[all]">
+    <PVProperty name="hSource" description="source object" configType="REQUIRED" dataType="PVObject"/>
+    <PVProperty name="offset" description="offset" configType="REQUIRED" dataType="double"/>
+    <PVProperty name="gain" description="gain" configType="REQUIRED" dataType="double"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Vir" description="Structure-element for virtual objects" possibleParents="[PVServer,Sys]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="Virtual" description="virtual object with getter and setter object (used to execute sequences" possibleParents="[all]">
+    <PVProperty name="setObject" description="handle to set object (set when value!=0)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="resetObject" description="handle to reset object (set when value==0)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hSetCondition" description="additional object to check before setObject is set" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hResetCondition" description="additional object to check before resetObject is set" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="BufDouble" description="BufLong virtual variable" possibleParents="[all]">
+    <PVProperty name="value" description="double value" configType="OPTIONAL" dataType="double"/>
+    <PVProperty name="time" description="time value" configType="OPTIONAL" dataType="long"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="BufLong" description="BufLong virtual variable" possibleParents="[all]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="time" description="time value" configType="OPTIONAL" dataType="long"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="TLIClassic" description="Test Language Interpreter (Classic Version" possibleParents="[all]">
+    <PVProperty name="virHandle" description="handle of vir" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="tdHandle" description="handle of td" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="rdHandle" description="handle of rd" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="tlSyncHandle" description="handle of tlSync" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="consoleHandle" description="handle of console" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="prokistHandle" description="handle of prokist" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="debugFlag" description="debugFlag used for TS2000 debugger" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="state" description="0: Clean" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="breakFlag" description="breakFlag" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="callbackObject" description="handle of the callback object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="enableDebug" description="enableDebug" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="callbackIndex" description="index of the callback object" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="docLevel" description="documentation level for Step/EndStep" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="logFilename" description="logFilename" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="hErrorHandlerObj" description="handle of the error handler object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hFPGA" description="handle of fpga object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="filename" description="name of the recent loaded file" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="countLines" description="name of the recent loaded file" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="countTextLines" description="name of the recent loaded file" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="countTasks" description="number of tasks" configType="OPTIONAL" dataType="int" defaultValue="1"/>
+    <PVProperty name="hConnector" description="hConnector" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hTaskObj" description="hTaskObj" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="timerHandle" description="handle of the timer object" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="tdHostInterfaceHandle" description="handle of the tdHostInterface" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="taskPriority" description="task priority (not used in TS3000)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="taskStacksize" description="taskStacksize (not used in TS3000)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="loadlevel" description="loadlevel" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="profilingEnabled" description="if !=0 profiling data is written" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="TLIGroovyReloaded" description="Test Language Interpreter (Groovy Version with TLMClassicReloaded" possibleParents="[all]">
+    <PVProperty name="classicMode" description="classic mode (TLMClassic functions)" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="timerHandle" description="handle to timer object (TLMClassic functions)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="prokistHandle" description="handle to prokist object (TLMClassic functions)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="logFilename" description="name of logFile (TLMClassic functions)" configType="OPTIONAL" dataType="String"/>
+    <PVProperty name="tdHostInterfaceHandle" description="handle to tdHostInterface (TLMClassic functions)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="hFPGA" description="handle to fpga object (TLMClassic functions)" configType="OPTIONAL" dataType="PVObject"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+  <PVClass name="TLSync" description="TLSync&#10;" possibleParents="[all]">
+    <PVProperty name="value" description="integer value" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="startLineNo" description="the line no where the tl program started" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="stopLineNo" description="the line no where the task has to stop" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="stackPt" description="pointer to actual stack field" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="activeFlag" description="the task-state: 0=inactive" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="ecode" description="error code" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="childrenCount" description="count of running children" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="callbackObject" description="callbackObject" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="callbackIndex" description="callback Object index" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="callbackMethod" description="callback Object method" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="stack" description="stack of the tl-task" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="profilingEnabled" description="if !=0 profiling data is written" configType="OPTIONAL" dataType="int"/>
+    <PVProperty name="forwardHandle" description="object to be forwarded" configType="HIDDEN" dataType="String"/>
+    <PVProperty name="gatewayHandle" description="the Gateway, e.g. a PVClient" configType="HIDDEN" dataType="PVObject" classFilter="[PVClient]"/>
+  </PVClass>
+</components>

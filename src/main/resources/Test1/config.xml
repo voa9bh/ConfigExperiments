@@ -1,0 +1,2229 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE configuration [
+    <!ELEMENT configuration (object)*>
+    <!ELEMENT object (object | param)*>
+    <!ATTLIST object
+        className CDATA #REQUIRED
+        handle CDATA #IMPLIED
+        dimension CDATA #IMPLIED
+        name CDATA #REQUIRED>
+    <!ELEMENT param (#PCDATA)>
+    <!ATTLIST param
+        value CDATA #REQUIRED
+        index CDATA #IMPLIED
+        name CDATA #REQUIRED>
+    ]>
+<configuration>
+  <!-- com -->
+  <object className="MemLong" dimension="" handle="" name="com">
+    <object className="SocketConnector" dimension="" handle="" name="netConnector">
+      <param index="" name="portNo" value="5002" />
+    </object>
+    <object dimension="" handle="" className="MQTTConnector" name="mqttConnectorSystemTools">
+      <param name="username" index="" value="spex" />
+      <param name="password" index="" value="1eSP2Kw6tbk=" />
+      <param name="portNo" index="" value="1883" />
+      <param name="mqttVersion" index="" value="5" />
+      <object dimension="" handle="" className="MQTTConnection" name="request">
+        <param name="topicName" index="" value="/spex/request/sync" />
+        <param name="responseConnection" index="" value="mqttConnectorSystemTools/response" />
+        <param name="syncObjects" index="" value="pvServer" />
+        <param name="loggingEnabled" index="" value="1" />
+      </object>
+      <object dimension="" handle="" className="MQTTConnection" name="response">
+        <param name="topicName" index="" value="/spex/response/sync" />
+        <param name="loggingEnabled" index="" value="1" />
+      </object>
+      <object dimension="" handle="" className="MQTTConnection" name="async">
+        <param name="topicName" index="" value="/spex/response/async" />
+        <param name="loggingEnabled" index="" value="1" />
+        <param name="asyncObjects" index="" value="console1;console2;console3;console4;console5;console6;console7;console8;rd1;rd2;rd3;rd4;rd5;rd6;rd7;rd8" />
+      </object>
+    </object>
+    <!--object dimension="" handle="" className="MQTTConnector" name="mqttConnectorLDS">
+      <param name="username" index="" value="lnp:b-050tef25"/>
+      <param name="password" index="" value="JuBGCtx4vQfdhVOqWX2W5w=="/>
+      <param name="hostName" index="" value="10.41.138.106"/>
+      <param name="portNo" index="" value="1883"/>
+      <param name="mqttVersion" index="" value="3"/>
+      <object dimension="" handle="" className="MQTTConnection" name="request">
+        <param name="topicName" index="" value="/spexcs/request/sync"/>
+        <param name="responseConnection" index="" value="mqttConnectorLDS/response"/>
+        <param name="syncObjects" index="" value="vir1;vir3;vir5;csInterface1;csInterface3;csInterface5"/>
+        <param name="loggingEnabled" index="" value="1"/>
+      </object>
+      <object dimension="" handle="" className="MQTTConnection" name="response">
+        <param name="topicName" index="" value="/spexcs/response/sync"/>
+        <param name="loggingEnabled" index="" value="1"/>
+      </object>
+    </object-->
+    <!--TODO: Machine Only-->
+    <!--<rt-->
+    <object className="SubProcess" dimension="" handle="" name="rt">
+      <param index="" name="startCommand" value="./spex-rt configRT.xml init.bat init.log" />
+      <param index="" name="workDir" value="/testenv/flash/rt/" />
+    </object>
+    <object className="PVClient" dimension="" handle="" name="pvcRT">
+      <param index="" name="asyncEnabled" value="0" />
+      <param index="" name="hConnector[0]" value="tliMessageDispatcher1" />
+      <param index="" name="hConnector[1]" value="tliMessageDispatcher2" />
+      <param index="" name="hConnector[2]" value="tliMessageDispatcher3" />
+      <param index="" name="hConnector[3]" value="tliMessageDispatcher4" />
+      <param index="" name="hConnector[4]" value="tliMessageDispatcher5" />
+      <param index="" name="hConnector[5]" value="tliMessageDispatcher6" />
+      <param index="" name="hConnector[6]" value="tliMessageDispatcher7" />
+      <param index="" name="hConnector[7]" value="tliMessageDispatcher8" />
+      <param index="" name="hLookup" value="lookup" />
+      <param index="" name="hostName" value="127.0.0.1" />
+      <param index="" name="hSubProcess" value="rt" />
+      <param index="" name="port" value="5003" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+    </object>
+    <!--<goepelCAN1-->
+    <object handle="" dimension="" className="SubProcess" name="subProcessGoepelCAN1">
+      <param name="workDir" index="" value="/testenv/flash/goepel/" />
+      <param name="startCommand" index="" value="./microspex-goepel ./node1/configGoepelCh1CAN.xml ./node1/init.bat ./node1/init.log" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcGoepelCAN1">
+      <param name="hLookup" index="" value="lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5006" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher1" />
+      <param name="hSubProcess" index="" value="subProcessGoepelCAN1" />
+    </object>
+    <!--goepelCAN2-->
+    <object handle="" dimension="" className="SubProcess" name="subProcessGoepelCAN2">
+      <param name="workDir" index="" value="/testenv/flash/goepel/" />
+      <param name="startCommand" index="" value="./microspex-goepel ./node2/configGoepelCh2CAN.xml ./node2/init.bat ./node2/init.log" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcGoepelCAN2">
+      <param name="hLookup" index="" value="lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5007" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher2" />
+      <param name="hSubProcess" index="" value="subProcessGoepelCAN2" />
+    </object>
+    <!--goepelCAN3-->
+    <object handle="" dimension="" className="SubProcess" name="subProcessGoepelCAN3">
+      <param name="workDir" index="" value="/testenv/flash/goepel/" />
+      <param name="startCommand" index=""
+             value="./microspex-goepel ./node3/configGoepelCh3CAN.xml ./node3/init.bat ./node3/init.log" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcGoepelCAN3">
+      <param name="hLookup" index="" value="lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5008" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher3" />
+      <param name="hSubProcess" index="" value="subProcessGoepelCAN3" />
+    </object>
+    <!--goepelCAN4-->
+    <object handle="" dimension="" className="SubProcess" name="subProcessGoepelCAN4">
+      <param name="workDir" index="" value="/testenv/flash/goepel/" />
+      <param name="startCommand" index=""
+             value="./microspex-goepel ./node4/configGoepelCh4CAN.xml ./node4/init.bat ./node4/init.log" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcGoepelCAN4">
+      <param name="hLookup" index="" value="lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5009" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher4" />
+      <param name="hSubProcess" index="" value="subProcessGoepelCAN4" />
+    </object>
+    <!--goepelCAN5-->
+    <object handle="" dimension="" className="SubProcess" name="subProcessGoepelCAN5">
+      <param name="workDir" index="" value="/testenv/flash/goepel/" />
+      <param name="startCommand" index=""
+             value="./microspex-goepel ./node5/configGoepelCh5CAN.xml ./node5/init.bat ./node5/init.log" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcGoepelCAN5">
+      <param name="hLookup" index="" value="lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5010" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher5" />
+      <param name="hSubProcess" index="" value="subProcessGoepelCAN5" />
+    </object>
+    <!--goepelCAN6-->
+    <object handle="" dimension="" className="SubProcess" name="subProcessGoepelCAN6">
+      <param name="workDir" index="" value="/testenv/flash/goepel/" />
+      <param name="startCommand" index=""
+             value="./microspex-goepel ./node6/configGoepelCh6CAN.xml ./node6/init.bat ./node6/init.log" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcGoepelCAN6">
+      <param name="hLookup" index="" value="lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5011" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher6" />
+      <param name="hSubProcess" index="" value="subProcessGoepelCAN6" />
+    </object>
+    <!--goepelCAN7-->
+    <object handle="" dimension="" className="SubProcess" name="subProcessGoepelCAN7">
+      <param name="workDir" index="" value="/testenv/flash/goepel/" />
+      <param name="startCommand" index=""
+             value="./microspex-goepel ./node7/configGoepelCh7CAN.xml ./node7/init.bat ./node7/init.log" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcGoepelCAN7">
+      <param name="hLookup" index="" value="lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5012" />
+      <param name="asyncEnabled" index="" value="1" />
+      <param name="hConnector" index="" value="tliMessageDispatcher7" />
+      <param name="hSubProcess" index="" value="subProcessGoepelCAN7" />
+    </object>
+    <!--goepelCAN8-->
+    <object handle="" dimension="" className="SubProcess" name="subProcessGoepelCAN8">
+      <param name="workDir" index="" value="/testenv/flash/goepel/" />
+      <param name="startCommand" index=""
+             value="./microspex-goepel ./node8/configGoepelCh8CAN.xml ./node8/init.bat ./node8/init.log" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcGoepelCAN8">
+      <param name="hLookup" index="" value="lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5013" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher8" />
+      <param name="hSubProcess" index="" value="subProcessGoepelCAN8" />
+    </object>
+    <!-- TMCC 1-->
+    <object handle="" dimension="" className="SubProcess" name="microspexTmcc1">
+      <param name="workDir" index="" value="/testenv/flash/tmcc/" />
+      <param name="startCommand" index=""
+             value="./microspex-tmcc ./node1/config-microspex-tmcc1.xml ./node1/init.bat" />
+      <param name="restartTimeout" index="" value="1000" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcMicroSpexTmcc1">
+      <param name="simulation" index="" value="0" />
+      <param name="hLookup" index="" value="procs/lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5014" />
+      <param name="hSubProcess" index="" value="microspexTmcc1" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher1" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+      <param index="" name="timeout" value="1200" />
+    </object>
+    <!-- TMCC 2-->
+    <object handle="" dimension="" className="SubProcess" name="microspexTmcc2">
+      <param name="workDir" index="" value="/testenv/flash/tmcc/" />
+      <param name="startCommand" index=""
+             value="./microspex-tmcc ./node2/config-microspex-tmcc.xml ./node2/init.bat" />
+      <param name="restartTimeout" index="" value="1000" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcMicroSpexTmcc2">
+      <param name="simulation" index="" value="0" />
+      <param name="hLookup" index="" value="procs/lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5015" />
+      <param name="hSubProcess" index="" value="microspexTmcc2" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher2" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+      <param index="" name="timeout" value="1200" />
+    </object>
+    <!-- TMCC 3-->
+    <object handle="" dimension="" className="SubProcess" name="microspexTmcc3">
+      <param name="workDir" index="" value="/testenv/flash/tmcc/" />
+      <param name="startCommand" index=""
+             value="./microspex-tmcc ./node3/config-microspex-tmcc.xml ./node3/init.bat" />
+      <param name="restartTimeout" index="" value="1000" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcMicroSpexTmcc3">
+      <param name="simulation" index="" value="0" />
+      <param name="hLookup" index="" value="procs/lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5016" />
+      <param name="hSubProcess" index="" value="microspexTmcc3" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher3" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+      <param index="" name="timeout" value="1200" />
+    </object>
+    <!-- TMCC 4-->
+    <object handle="" dimension="" className="SubProcess" name="microspexTmcc4">
+      <param name="workDir" index="" value="/testenv/flash/tmcc/" />
+      <param name="startCommand" index=""
+             value="./microspex-tmcc ./node4/config-microspex-tmcc.xml ./node4/init.bat" />
+      <param name="restartTimeout" index="" value="1000" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcMicroSpexTmcc4">
+      <param name="simulation" index="" value="0" />
+      <param name="hLookup" index="" value="procs/lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5017" />
+      <param name="hSubProcess" index="" value="microspexTmcc4" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher4" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+      <param index="" name="timeout" value="1200" />
+    </object>
+    <!-- TMCC 5-->
+    <object handle="" dimension="" className="SubProcess" name="microspexTmcc5">
+      <param name="workDir" index="" value="/testenv/flash/tmcc/" />
+      <param name="startCommand" index=""
+             value="./microspex-tmcc ./node5/config-microspex-tmcc.xml ./node5/init.bat" />
+      <param name="restartTimeout" index="" value="1000" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcMicroSpexTmcc5">
+      <param name="simulation" index="" value="0" />
+      <param name="hLookup" index="" value="procs/lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5018" />
+      <param name="hSubProcess" index="" value="microspexTmcc5" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher5" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+      <param index="" name="timeout" value="1200" />
+    </object>
+    <!-- TMCC 6-->
+    <object handle="" dimension="" className="SubProcess" name="microspexTmcc6">
+      <param name="workDir" index="" value="/testenv/flash/tmcc/" />
+      <param name="startCommand" index=""
+             value="./microspex-tmcc ./node6/config-microspex-tmcc.xml ./node6/init.bat" />
+      <param name="restartTimeout" index="" value="1000" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcMicroSpexTmcc6">
+      <param name="simulation" index="" value="0" />
+      <param name="hLookup" index="" value="procs/lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5019" />
+      <param name="hSubProcess" index="" value="microspexTmcc6" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher6" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+      <param index="" name="timeout" value="1200" />
+    </object>
+    <!-- TMCC 7-->
+    <object handle="" dimension="" className="SubProcess" name="microspexTmcc7">
+      <param name="workDir" index="" value="/testenv/flash/tmcc/" />
+      <param name="startCommand" index=""
+             value="./microspex-tmcc ./node7/config-microspex-tmcc.xml ./node7/init.bat" />
+      <param name="restartTimeout" index="" value="1000" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcMicroSpexTmcc7">
+      <param name="simulation" index="" value="0" />
+      <param name="hLookup" index="" value="procs/lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5020" />
+      <param name="hSubProcess" index="" value="microspexTmcc7" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher7" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+      <param index="" name="timeout" value="1200" />
+    </object>
+    <!-- TMCC 8-->
+    <object handle="" dimension="" className="SubProcess" name="microspexTmcc8">
+      <param name="workDir" index="" value="/testenv/flash/tmcc/" />
+      <param name="startCommand" index=""
+             value="./microspex-tmcc ./node8/config-microspex-tmcc.xml ./node8/init.bat" />
+      <param name="restartTimeout" index="" value="1000" />
+    </object>
+    <object handle="" dimension="" className="PVClient" name="pvcMicroSpexTmcc8">
+      <param name="simulation" index="" value="0" />
+      <param name="hLookup" index="" value="procs/lookup" />
+      <param name="hostName" index="" value="127.0.0.1" />
+      <param name="port" index="" value="5021" />
+      <param name="hSubProcess" index="" value="microspexTmcc8" />
+      <param name="asyncEnabled" index="" value="0" />
+      <param name="hConnector" index="" value="tliMessageDispatcher8" />
+      <param index="" name="useBigPacket" value="1" />
+      <param index="" name="useBinaryResponse" value="1" />
+      <param index="" name="timeout" value="1200" />
+    </object>
+    <!--TODO: Lab-Tester-->
+    <!--object className="PVSocketClient" handle="" dimension="" name="pvSocketClientKeysight">
+      <param name="hostname" index="" value="192.168.2.2"/>
+      <param name="portNumber" index="" value="5025"/>
+      <param name="terminationBytes" index="" value="0A"/>
+    </object-->
+  </object>
+  <!-- dev -->
+  <object className="MemLong" dimension="" handle="" name="dev">
+    <object className="PVSystem" dimension="" handle="" name="system" />
+    <object className="Timer" dimension="" handle="" name="timer" />
+  </object>
+  <!-- procs -->
+  <object handle="" dimension="" className="MemLong" name="procs">
+    <object className="Lookup" dimension="" handle="" name="lookup" />
+    <object className="ErrorHandler" dimension="" handle="" name="errorHandler">
+      <param index="" name="hConnector" value="netConnector" />
+      <param name="hCSInterface" index="" value="csInterface1" />
+      <param name="hCSInterface" index="" value="csInterface2" />
+    </object>
+    <object className="Clock" dimension="" handle="" name="clock" />
+    <object className="ResourceManager" dimension="" handle="" name="resouceManagerTMCC"/>
+    <object className="ResourceManager" dimension="" handle="" name="resourceManagerLightSource"/>
+  </object>
+  <object className="MemLong" dimension="" handle="" name="vir">
+    <!--TODO: Für was ist das?-->
+    <object handle="" dimension="" className="CallbackLong" name="ToCS2000">
+      <param value="netConnector" index="" name="hConnector" />
+    </object>
+    <object handle="" dimension="" className="MemLong" name="FromCS2000" />
+    <object handle="" dimension="" className="CallbackText" name="SpecialFctString">
+      <param value="netConnector" index="" name="hConnector" />
+    </object>
+  </object>
+
+  <!-- sys1 -->
+  <object className="MemLong" dimension="" handle="" name="sys1">
+    <!-- com1 -->
+    <object className="MemLong" dimension="" handle="" name="com1">
+      <object dimension="" handle="" className="SMBConnection" name="smbConnectionLDS1">
+        <param name="mountPoint" value="/mnt/smbConnectionLDS1"/>
+      </object>
+    </object>
+    <!-- procs1 -->
+    <object className="MemLong" dimension="" handle="" name="procs1">
+      <object handle="" dimension="" className="Task" name="tliMessageDispatcher1">
+        <param name="hMessageHandler" index="" value="tli1" />
+      </object>
+      <object className="PVConsole" dimension="" handle="" name="console1">
+        <param index="" name="hConnector[0]" value="mqttConnectorSystemTools" />
+        <param index="" name="hConnector[1]" value="netConnector" />
+      </object>
+      <!-- tli1 -->
+      <object className="TLI" dimension="" handle="" name="tli1">
+        <param name="virHandle" value="sys1/vir1"/>
+        <param name="rdHandle" value="sys1/rd1"/>
+        <param name="tdHandle" value="sys1/td1"/>
+        <param name="consoleHandle" value="sys1/procs1/console1"/>
+        <param name="hErrorHandlerObj" value="pvServer/procs/errorHandler"/>
+        <!-- TODO: Needed -->
+        <!-- param index="" name="classPath" value="${user.dir}"/-->
+        <param name="callbackObject" value="csInterface1"/>
+        <param name="docLevel" value="1"/>
+        <param name="PrintStepID" value="1"/>
+        <!-- TODO: Needed? -->
+        <param name="hConnector[0]" value="netConnector"/>
+      </object>
+      <!-- csInterface1 -->
+      <object className="CSInterface" dimension="" handle="" name="csInterface1">
+        <!--TODO: Machine Only-->
+        <object className="CSEtherCATInterface" dimension="" handle="" name="csEthercatInterface1">
+          <param name="hPVClient" value="com/pvcRT"/>
+          <param name="parentPath" value="csInterfaceEcGwy/csEc1"/>
+        </object>
+        <object handle="" dimension="" className="CallbackText" name="csMessage">
+          <param name="hConnector" index="" value="netConnector"/>
+        </object>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS1"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS2"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS3"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS4"/>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS1">
+          <param name="hConnector" value="csEthercatInterface1"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS2">
+          <param name="hConnector" value="csEthercatInterface1"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS3">
+          <param name="hConnector" value="csEthercatInterface1"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS4">
+          <param name="hConnector" value="csEthercatInterface1"/>
+        </object>
+        <param name="codeBase" value="/r1/sys1/daten/typdaten"/>
+        <param name="testProgramFile" value="VI4-Intrinsic-Encrypt-EOL-TEST.jar"/>
+        <param name="hTDHostObj" value="sys1/procs1/tdHostInterface1"/>
+        <param name="hRdObj" value="sys1/rd1"/>
+        <param name="hTliObj" value="sys1/procs1/tli1"/>
+        <param name="hErrorHandlerObj" value="procs/errorHandler"/>
+        <param name="hClockObj" value="procs/clock"/>
+        <param name="TimeoutTLI" value="36000"/>
+        <param name="taskIdleTime" value="1000"/>
+        <param name="hVirNestNrObj" value="vir1/vNestNumber"/>
+      </object>
+      <!-- tdHostInterface1 -->
+      <object className="TDHostInterface" dimension="" handle="" name="tdHostInterface1">
+        <param name="tdRootHandle" index="" value="td1"/>
+        <param name="rdRootHandle" index="" value="rd1"/>
+        <param name="lineName" index="" value=""/>
+        <param name="pmLineName" index="" value=""/>
+        <param name="cellAddress" index="" value=""/>
+        <param name="cellResultDir" index="" value=""/>
+        <param name="cellFTPUserName" index="" value=""/>
+        <param name="cellFTPPassword" index="" value=""/>
+        <param name="localResultDir" index="" value="/r1/sys1/daten/"/>
+        <param name="stationFunction" value=""/>
+        <param name="partIdentifyFlag" value="1"/>
+        <param name="localProgramDir" index="" value="/r1/sys1/daten/typdaten/"/>
+        <param name="eraseLocalProgramDir" value="1"/>
+        <param name="standalone" value="0"/>
+        <param name="moduleAddress" value=""/>
+        <param name="copyTaskIdleTime" value="2000"/>
+        <param name="useDoubleValuesOnly" value="1"/>
+      </object>
+    </object>
+    <!-- td1 rd1 -->
+    <object className="MemLong" dimension="" handle="" name="td1" />
+    <object className="ResultDataHeader" dimension="" handle="" name="rd1">
+      <param index="" name="fixedTraceIDs" value="" />
+      <param index="" name="hConnector" value="mqttConnectorSystemTools" />
+    </object>
+    <!-- vir1 -->
+    <object className="MemLong" dimension="" handle="" name="vir1">
+      <!-- TODO: Needed for newer versions? -->
+      <object handle="" dimension="" className="Reference" name="vMQTTConnectionTSToolsAsync">
+        <param name="forwardHandle" index="" value="com/mqttConnectorSystemTools/async"/>
+      </object>
+
+      <!-- TODO: für alle Instanzen umbenennen -->
+      <object className="Reference" handle="" dimension="" name="vResouceManagerTMCC">
+        <param name="forwardHandle" index="" value="procs/resouceManagerTMCC" />
+      </object>
+      <object className="Reference" handle="" dimension="" name="vResourceManagerLightSource">
+        <param name="forwardHandle" index="" value="procs/resourceManagerLightSource" />
+      </object>
+
+      <object handle="" dimension="" className="Reference" name="vLDSSMBConnection">
+        <param name="forwardHandle" index="" value="sys1/com1/smbConnectionLDS1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vModeFlag" />
+      <object className="MemLong" dimension="" handle="" name="vNestNumber">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vVir">
+        <param index="" name="forwardHandle" value="sys1/vir1" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vServiceAndTestFunctions" />
+      <object handle="" dimension="" className="MemLong" name="vBuffers"/>
+      <object className="MemText" dimension="" handle="" name="vTestBenchConfiguration" />
+
+      <object className="Reference" dimension="" handle="" name="vCSInterface">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vClock">
+        <param index="" name="forwardHandle" value="procs/clock" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vRd">
+        <param index="" name="forwardHandle" value="pvServer/sys1/rd1" />
+      </object>
+
+      <object name="vCanChannel" dimension="" handle="" className="RemoteObject">
+        <param name="gatewayHandle" index="" value="/pvServer/com/pvcGoepelCAN1" />
+        <param name="remoteObjectName" index="" value="/pvServer/dev/pxie6281/canChannel" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vTDHostInterface">
+        <param index="" name="forwardHandle" value="sys1/procs1/tdHostInterface1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS1">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1/userFlagFromCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS2">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1/userFlagFromCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS3">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1/userFlagFromCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS4">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1/userFlagFromCS4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS1">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1/userFlagToCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS2">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1/userFlagToCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS3">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1/userFlagToCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS4">
+        <param index="" name="forwardHandle" value="sys1/procs1/csInterface1/userFlagToCS4" />
+      </object>
+      <!--TODO: Machine Only-->
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN1Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName"
+               value="nest1DigitalOutEnableCAN1Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN2Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest1DigitalOutEnableCAN2Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest1DigitalOutEnableWAU" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest1DigitalOutEnableKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest1AnalogInUKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInIDUT">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest1AnalogInIDUT"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest1AnalogInUWAU"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableLight">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="digitalOutEnableLight"/>
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vTMCCDevice">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc1" />
+        <param index="" name="remoteObjectName" value="vir/vTMCCDevice" />
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vBoimenDecoder">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc1" />
+        <param index="" name="remoteObjectName" value="vir/vBoimenDecoder" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vTestCycleCount">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="isEolSystemtest">
+        <param index="" name="value" value="0"/>
+      </object>
+
+      <!--TODO: Lab-Tester-->
+      <!--object handle="" dimension="" className="Reference" name="vPvSocketClientKeysight">
+        <param name="forwardHandle" index="" value="com/pvSocketClientKeysight"/>
+      </object-->
+
+    </object>
+  </object>
+
+  <!-- sys2 -->
+  <object className="MemLong" dimension="" handle="" name="sys2">
+    <!-- com1 -->
+    <object className="MemLong" dimension="" handle="" name="com2">
+      <object dimension="" handle="" className="SMBConnection" name="smbConnectionLDS2">
+        <param name="mountPoint" value="/mnt/smbConnectionLDS2"/>
+      </object>
+    </object>
+    <!-- procs2 -->
+    <object className="MemLong" dimension="" handle="" name="procs2">
+      <object handle="" dimension="" className="Task" name="tliMessageDispatcher2">
+        <param name="hMessageHandler" index="" value="tli2" />
+      </object>
+      <object className="PVConsole" dimension="" handle="" name="console2">
+        <param index="" name="hConnector[0]" value="mqttConnectorSystemTools" />
+        <param index="" name="hConnector[1]" value="netConnector" />
+      </object>
+      <!-- tli2 -->
+      <object className="TLI" dimension="" handle="" name="tli2">
+        <param name="virHandle" value="vir2"/>
+        <param name="rdHandle" value="rd2"/>
+        <param name="tdHandle" value="td2"/>
+        <param name="consoleHandle" value="console2"/>
+        <param name="hErrorHandlerObj" value="pvServer/procs/errorHandler"/>
+        <!-- TODO: Needed -->
+        <!-- param index="" name="classPath" value="${user.dir}"/-->
+        <param name="callbackObject" value="csInterface2"/>
+        <param name="docLevel" value="1"/>
+        <param name="PrintStepID" value="1"/>
+        <!-- TODO: Needed? -->
+        <param name="hConnector[0]" value="netConnector"/>
+      </object>
+      <!-- csInterface2 -->
+      <object className="CSInterface" dimension="" handle="" name="csInterface2">
+        <!--TODO: Machine Only-->
+        <object className="CSEtherCATInterface" dimension="" handle="" name="csEthercatInterface2">
+          <param name="hPVClient" value="com/pvcRT"/>
+          <param name="parentPath" value="csInterfaceEcGwy/csEc2"/>
+        </object>
+        <object handle="" dimension="" className="CallbackText" name="csMessage">
+          <param name="hConnector" index="" value="netConnector"/>
+        </object>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS1"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS2"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS3"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS4"/>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS1">
+          <param name="hConnector" value="csEthercatInterface2"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS2">
+          <param name="hConnector" value="csEthercatInterface2"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS3">
+          <param name="hConnector" value="csEthercatInterface2"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS4">
+          <param name="hConnector" value="csEthercatInterface2"/>
+        </object>
+        <param name="codeBase" value="/r1/sys2/daten/typdaten"/>
+        <param name="testProgramFile" value="VI4-Intrinsic-Encrypt-EOL-TEST.jar"/>
+        <param name="hTDHostObj" value="tdHostInterface2"/>
+        <param name="hRdObj" value="rd2"/>
+        <param name="hTliObj" value="tli2"/>
+        <param name="hErrorHandlerObj" value="procs/errorHandler"/>
+        <param name="hClockObj" value="procs/clock"/>
+        <param name="TimeoutTLI" value="36000"/>
+        <param name="taskIdleTime" value="1000"/>
+        <param name="hVirNestNrObj" value="vir2/vNestNumber"/>
+      </object>
+      <!-- tdHostInterface2 -->
+      <object className="TDHostInterface" dimension="" handle="" name="tdHostInterface2">
+        <param name="tdRootHandle" index="" value="td2"/>
+        <param name="rdRootHandle" index="" value="rd2"/>
+        <param name="lineName" index="" value=""/>
+        <param name="pmLineName" index="" value=""/>
+        <param name="cellAddress" index="" value=""/>
+        <param name="cellResultDir" index="" value=""/>
+        <param name="cellFTPUserName" index="" value=""/>
+        <param name="cellFTPPassword" index="" value=""/>
+        <param name="localResultDir" index="" value="/r1/sys2/daten/"/>
+        <param name="stationFunction" value=""/>
+        <param name="partIdentifyFlag" value="1"/>
+        <param name="localProgramDir" index="" value="/r1/sys2/daten/typdaten/"/>
+        <param name="eraseLocalProgramDir" value="1"/>
+        <param name="standalone" value="0"/>
+        <param name="moduleAddress" value=""/>
+        <param name="copyTaskIdleTime" value="2000"/>
+        <param name="useDoubleValuesOnly" value="1"/>
+      </object>
+    </object>
+    <!-- td2 rd2 -->
+    <object className="MemLong" dimension="" handle="" name="td2" />
+    <object className="ResultDataHeader" dimension="" handle="" name="rd2">
+      <param index="" name="fixedTraceIDs" value="" />
+      <param index="" name="hConnector" value="mqttConnectorSystemTools" />
+    </object>
+    <!-- vir2 -->
+    <object className="MemLong" dimension="" handle="" name="vir2">
+      <!-- TODO: Needed for newer versions? -->
+      <object handle="" dimension="" className="Reference" name="vMQTTConnectionTSToolsAsync">
+        <param name="forwardHandle" index="" value="com/mqttConnectorSystemTools/async"/>
+      </object>
+
+      <!-- TODO: für alle Instanzen umbenennen -->
+      <object className="Reference" handle="" dimension="" name="vResouceManagerTMCC">
+        <param name="forwardHandle" index="" value="procs/resouceManagerTMCC" />
+      </object>
+      <object className="Reference" handle="" dimension="" name="vResourceManagerLightSource">
+        <param name="forwardHandle" index="" value="procs/resourceManagerLightSource" />
+      </object>
+
+      <object handle="" dimension="" className="Reference" name="vLDSSMBConnection">
+        <param name="forwardHandle" index="" value="sys2/com2/smbConnectionLDS2"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vModeFlag" />
+      <object className="MemLong" dimension="" handle="" name="vNestNumber">
+        <param index="" name="value" value="2"/>
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vVir">
+        <param index="" name="forwardHandle" value="sys2/vir2" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vServiceAndTestFunctions" />
+      <object handle="" dimension="" className="MemLong" name="vBuffers"/>
+      <object className="MemText" dimension="" handle="" name="vTestBenchConfiguration" />
+
+      <object className="Reference" dimension="" handle="" name="vCSInterface">
+        <param index="" name="forwardHandle" value="csInterface2" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vClock">
+        <param index="" name="forwardHandle" value="procs/clock" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vRd">
+        <param index="" name="forwardHandle" value="rd2" />
+      </object>
+
+      <object name="vCanChannel" dimension="" handle="" className="RemoteObject">
+        <param name="gatewayHandle" index="" value="pvcGoepelCAN2" />
+        <param name="remoteObjectName" index="" value="/pvServer/dev/pxie6281/canChannel" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vTDHostInterface">
+        <param index="" name="forwardHandle" value="tdHostInterface2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS1">
+        <param index="" name="forwardHandle" value="csInterface2/userFlagFromCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS2">
+        <param index="" name="forwardHandle" value="csInterface2/userFlagFromCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS3">
+        <param index="" name="forwardHandle" value="csInterface2/userFlagFromCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS4">
+        <param index="" name="forwardHandle" value="csInterface2/userFlagFromCS4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS1">
+        <param index="" name="forwardHandle" value="csInterface2/userFlagToCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS2">
+        <param index="" name="forwardHandle" value="csInterface2/userFlagToCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS3">
+        <param index="" name="forwardHandle" value="csInterface2/userFlagToCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS4">
+        <param index="" name="forwardHandle" value="csInterface2/userFlagToCS4" />
+      </object>
+      <!--TODO: Machine Only-->
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN1Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest2DigitalOutEnableCAN1Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN2Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest2DigitalOutEnableCAN2Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest2DigitalOutEnableWAU" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest2DigitalOutEnableKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest2AnalogInUKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInIDUT">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest2AnalogInIDUT"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest2AnalogInUWAU"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableLight">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="digitalOutEnableLight"/>
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vTMCCDevice">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc2" />
+        <param index="" name="remoteObjectName" value="vir/vTMCCDevice" />
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vBoimenDecoder">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc2" />
+        <param index="" name="remoteObjectName" value="vir/vBoimenDecoder" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vTestCycleCount">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="isEolSystemtest">
+        <param index="" name="value" value="0"/>
+      </object>
+
+      <!--TODO: Lab-Tester-->
+      <!--object handle="" dimension="" className="Reference" name="vPvSocketClientKeysight">
+        <param name="forwardHandle" index="" value="com/pvSocketClientKeysight"/>
+      </object-->
+
+    </object>
+  </object>
+
+  <!-- sys3 -->
+  <object className="MemLong" dimension="" handle="" name="sys3">
+    <!-- com3 -->
+    <object className="MemLong" dimension="" handle="" name="com1">
+      <object dimension="" handle="" className="SMBConnection" name="smbConnectionLDS3">
+        <param name="mountPoint" value="/mnt/smbConnectionLDS3"/>
+      </object>
+    </object>
+    <!-- procs3 -->
+    <object className="MemLong" dimension="" handle="" name="procs3">
+      <object handle="" dimension="" className="Task" name="tliMessageDispatcher3">
+        <param name="hMessageHandler" index="" value="tli3" />
+      </object>
+      <object className="PVConsole" dimension="" handle="" name="console3">
+        <param index="" name="hConnector[0]" value="mqttConnectorSystemTools" />
+        <param index="" name="hConnector[1]" value="netConnector" />
+      </object>
+      <!-- tli3 -->
+      <object className="TLI" dimension="" handle="" name="tli3">
+        <param name="virHandle" value="vir3"/>
+        <param name="rdHandle" value="rd3"/>
+        <param name="tdHandle" value="td3"/>
+        <param name="consoleHandle" value="console3"/>
+        <param name="hErrorHandlerObj" value="pvServer/procs/errorHandler"/>
+        <!-- TODO: Needed -->
+        <!-- param index="" name="classPath" value="${user.dir}"/-->
+        <param name="callbackObject" value="csInterface3"/>
+        <param name="docLevel" value="1"/>
+        <param name="PrintStepID" value="1"/>
+        <!-- TODO: Needed? -->
+        <param name="hConnector[0]" value="netConnector"/>
+      </object>
+      <!-- csInterface3 -->
+      <object className="CSInterface" dimension="" handle="" name="csInterface3">
+        <!--TODO: Machine Only-->
+        <object className="CSEtherCATInterface" dimension="" handle="" name="csEthercatInterface3">
+          <param name="hPVClient" value="com/pvcRT"/>
+          <param name="parentPath" value="csInterfaceEcGwy/csEc3"/>
+        </object>
+        <object handle="" dimension="" className="CallbackText" name="csMessage">
+          <param name="hConnector" index="" value="netConnector"/>
+        </object>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS1"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS2"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS3"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS4"/>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS1">
+          <param name="hConnector" value="csEthercatInterface3"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS2">
+          <param name="hConnector" value="csEthercatInterface3"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS3">
+          <param name="hConnector" value="csEthercatInterface3"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS4">
+          <param name="hConnector" value="csEthercatInterface3"/>
+        </object>
+        <param name="codeBase" value="/r1/sys3/daten/typdaten"/>
+        <param name="testProgramFile" value="VI4-Intrinsic-Encrypt-EOL-TEST.jar"/>
+        <param name="hTDHostObj" value="tdHostInterface3"/>
+        <param name="hRdObj" value="rd3"/>
+        <param name="hTliObj" value="tli3"/>
+        <param name="hErrorHandlerObj" value="procs/errorHandler"/>
+        <param name="hClockObj" value="procs/clock"/>
+        <param name="TimeoutTLI" value="36000"/>
+        <param name="taskIdleTime" value="1000"/>
+        <param name="hVirNestNrObj" value="vir3/vNestNumber"/>
+      </object>
+      <!-- tdHostInterface3 -->
+      <object className="TDHostInterface" dimension="" handle="" name="tdHostInterface3">
+        <param name="tdRootHandle" index="" value="td3"/>
+        <param name="rdRootHandle" index="" value="rd3"/>
+        <param name="lineName" index="" value=""/>
+        <param name="pmLineName" index="" value=""/>
+        <param name="cellAddress" index="" value=""/>
+        <param name="cellResultDir" index="" value=""/>
+        <param name="cellFTPUserName" index="" value=""/>
+        <param name="cellFTPPassword" index="" value=""/>
+        <param name="localResultDir" index="" value="/r1/sys3/daten/"/>
+        <param name="stationFunction" value=""/>
+        <param name="partIdentifyFlag" value="1"/>
+        <param name="localProgramDir" index="" value="/r1/sys3/daten/typdaten/"/>
+        <param name="eraseLocalProgramDir" value="1"/>
+        <param name="standalone" value="0"/>
+        <param name="moduleAddress" value=""/>
+        <param name="copyTaskIdleTime" value="2000"/>
+        <param name="useDoubleValuesOnly" value="1"/>
+      </object>
+    </object>
+    <!-- td3 rd3 -->
+    <object className="MemLong" dimension="" handle="" name="td3" />
+    <object className="ResultDataHeader" dimension="" handle="" name="rd3">
+      <param index="" name="fixedTraceIDs" value="" />
+      <param index="" name="hConnector" value="mqttConnectorSystemTools" />
+    </object>
+    <!-- vir3 -->
+    <object className="MemLong" dimension="" handle="" name="vir3">
+      <!-- TODO: Needed for newer versions? -->
+      <object handle="" dimension="" className="Reference" name="vMQTTConnectionTSToolsAsync">
+        <param name="forwardHandle" index="" value="com/mqttConnectorSystemTools/async"/>
+      </object>
+
+      <!-- TODO: für alle Instanzen umbenennen -->
+      <object className="Reference" handle="" dimension="" name="vResouceManagerTMCC">
+        <param name="forwardHandle" index="" value="procs/resouceManagerTMCC" />
+      </object>
+      <object className="Reference" handle="" dimension="" name="vResourceManagerLightSource">
+        <param name="forwardHandle" index="" value="procs/resourceManagerLightSource" />
+      </object>
+
+      <object handle="" dimension="" className="Reference" name="vLDSSMBConnection">
+        <param name="forwardHandle" index="" value="sys3/com3/smbConnectionLDS3"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vModeFlag" />
+      <object className="MemLong" dimension="" handle="" name="vNestNumber">
+        <param index="" name="value" value="3"/>
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vVir">
+        <param index="" name="forwardHandle" value="sys3/vir3" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vServiceAndTestFunctions" />
+      <object handle="" dimension="" className="MemLong" name="vBuffers"/>
+      <object className="MemText" dimension="" handle="" name="vTestBenchConfiguration" />
+
+      <object className="Reference" dimension="" handle="" name="vCSInterface">
+        <param index="" name="forwardHandle" value="csInterface3" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vClock">
+        <param index="" name="forwardHandle" value="procs/clock" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vRd">
+        <param index="" name="forwardHandle" value="rd3" />
+      </object>
+
+      <object name="vCanChannel" dimension="" handle="" className="RemoteObject">
+        <param name="gatewayHandle" index="" value="pvcGoepelCAN3" />
+        <param name="remoteObjectName" index="" value="/pvServer/dev/pxie6281/canChannel" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vTDHostInterface">
+        <param index="" name="forwardHandle" value="tdHostInterface3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS1">
+        <param index="" name="forwardHandle" value="csInterface3/userFlagFromCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS2">
+        <param index="" name="forwardHandle" value="csInterface3/userFlagFromCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS3">
+        <param index="" name="forwardHandle" value="csInterface3/userFlagFromCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS4">
+        <param index="" name="forwardHandle" value="csInterface3/userFlagFromCS4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS1">
+        <param index="" name="forwardHandle" value="csInterface3/userFlagToCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS2">
+        <param index="" name="forwardHandle" value="csInterface3/userFlagToCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS3">
+        <param index="" name="forwardHandle" value="csInterface3/userFlagToCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS4">
+        <param index="" name="forwardHandle" value="csInterface3/userFlagToCS4" />
+      </object>
+      <!--TODO: Machine Only-->
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN1Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest3DigitalOutEnableCAN1Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN2Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest3DigitalOutEnableCAN2Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest3DigitalOutEnableWAU" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest3DigitalOutEnableKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest3AnalogInUKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInIDUT">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest3AnalogInIDUT"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest3AnalogInUWAU"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableLight">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="digitalOutEnableLight"/>
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vTMCCDevice">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc3" />
+        <param index="" name="remoteObjectName" value="vir/vTMCCDevice" />
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vBoimenDecoder">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc3" />
+        <param index="" name="remoteObjectName" value="vir/vBoimenDecoder" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vTestCycleCount">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="isEolSystemtest">
+        <param index="" name="value" value="0"/>
+      </object>
+
+      <!--TODO: Lab-Tester-->
+      <!--object handle="" dimension="" className="Reference" name="vPvSocketClientKeysight">
+        <param name="forwardHandle" index="" value="com/pvSocketClientKeysight"/>
+      </object-->
+
+    </object>
+  </object>
+
+  <!-- sys4 -->
+  <object className="MemLong" dimension="" handle="" name="sys4">
+    <!-- com4 -->
+    <object className="MemLong" dimension="" handle="" name="com4">
+      <object dimension="" handle="" className="SMBConnection" name="smbConnectionLDS4">
+        <param name="mountPoint" value="/mnt/smbConnectionLDS4"/>
+      </object>
+    </object>
+    <!-- procs4 -->
+    <object className="MemLong" dimension="" handle="" name="procs4">
+      <object handle="" dimension="" className="Task" name="tliMessageDispatcher4">
+        <param name="hMessageHandler" index="" value="tli4" />
+      </object>
+      <object className="PVConsole" dimension="" handle="" name="console4">
+        <param index="" name="hConnector[0]" value="mqttConnectorSystemTools" />
+        <param index="" name="hConnector[1]" value="netConnector" />
+      </object>
+      <!-- tli4 -->
+      <object className="TLI" dimension="" handle="" name="tli4">
+        <param name="virHandle" value="vir4"/>
+        <param name="rdHandle" value="rd4"/>
+        <param name="tdHandle" value="td4"/>
+        <param name="consoleHandle" value="console4"/>
+        <param name="hErrorHandlerObj" value="pvServer/procs/errorHandler"/>
+        <!-- TODO: Needed -->
+        <!-- param index="" name="classPath" value="${user.dir}"/-->
+        <param name="callbackObject" value="csInterface4"/>
+        <param name="docLevel" value="1"/>
+        <param name="PrintStepID" value="1"/>
+        <!-- TODO: Needed? -->
+        <param name="hConnector[0]" value="netConnector"/>
+      </object>
+      <!-- csInterface4 -->
+      <object className="CSInterface" dimension="" handle="" name="csInterface4">
+        <!--TODO: Machine Only-->
+        <object className="CSEtherCATInterface" dimension="" handle="" name="csEthercatInterface4">
+          <param name="hPVClient" value="com/pvcRT"/>
+          <param name="parentPath" value="csInterfaceEcGwy/csEc4"/>
+        </object>
+        <object handle="" dimension="" className="CallbackText" name="csMessage">
+          <param name="hConnector" index="" value="netConnector"/>
+        </object>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS1"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS2"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS3"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS4"/>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS1">
+          <param name="hConnector" value="csEthercatInterface4"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS2">
+          <param name="hConnector" value="csEthercatInterface4"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS3">
+          <param name="hConnector" value="csEthercatInterface4"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS4">
+          <param name="hConnector" value="csEthercatInterface4"/>
+        </object>
+        <param name="codeBase" value="/r1/sys4/daten/typdaten"/>
+        <param name="testProgramFile" value="VI4-Intrinsic-Encrypt-EOL-TEST.jar"/>
+        <param name="hTDHostObj" value="tdHostInterface4"/>
+        <param name="hRdObj" value="rd4"/>
+        <param name="hTliObj" value="tli4"/>
+        <param name="hErrorHandlerObj" value="procs/errorHandler"/>
+        <param name="hClockObj" value="procs/clock"/>
+        <param name="TimeoutTLI" value="36000"/>
+        <param name="taskIdleTime" value="1000"/>
+        <param name="hVirNestNrObj" value="vir4/vNestNumber"/>
+      </object>
+      <!-- tdHostInterface4 -->
+      <object className="TDHostInterface" dimension="" handle="" name="tdHostInterface4">
+        <param name="tdRootHandle" index="" value="td4"/>
+        <param name="rdRootHandle" index="" value="rd4"/>
+        <param name="lineName" index="" value=""/>
+        <param name="pmLineName" index="" value=""/>
+        <param name="cellAddress" index="" value=""/>
+        <param name="cellResultDir" index="" value=""/>
+        <param name="cellFTPUserName" index="" value=""/>
+        <param name="cellFTPPassword" index="" value=""/>
+        <param name="localResultDir" index="" value="/r1/sys4/daten/"/>
+        <param name="stationFunction" value=""/>
+        <param name="partIdentifyFlag" value="1"/>
+        <param name="localProgramDir" index="" value="/r1/sys4/daten/typdaten/"/>
+        <param name="eraseLocalProgramDir" value="1"/>
+        <param name="standalone" value="0"/>
+        <param name="moduleAddress" value=""/>
+        <param name="copyTaskIdleTime" value="2000"/>
+        <param name="useDoubleValuesOnly" value="1"/>
+      </object>
+    </object>
+    <!-- td4 rd4 -->
+    <object className="MemLong" dimension="" handle="" name="td4" />
+    <object className="ResultDataHeader" dimension="" handle="" name="rd4">
+      <param index="" name="fixedTraceIDs" value="" />
+      <param index="" name="hConnector" value="mqttConnectorSystemTools" />
+    </object>
+    <!-- vir4 -->
+    <object className="MemLong" dimension="" handle="" name="vir4">
+      <!-- TODO: Needed for newer versions? -->
+      <object handle="" dimension="" className="Reference" name="vMQTTConnectionTSToolsAsync">
+        <param name="forwardHandle" index="" value="com/mqttConnectorSystemTools/async"/>
+      </object>
+
+      <!-- TODO: für alle Instanzen umbenennen -->
+      <object className="Reference" handle="" dimension="" name="vResouceManagerTMCC">
+        <param name="forwardHandle" index="" value="procs/resouceManagerTMCC" />
+      </object>
+      <object className="Reference" handle="" dimension="" name="vResourceManagerLightSource">
+        <param name="forwardHandle" index="" value="procs/resourceManagerLightSource" />
+      </object>
+
+      <object handle="" dimension="" className="Reference" name="vLDSSMBConnection">
+        <param name="forwardHandle" index="" value="sys4/com4/smbConnectionLDS4"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vModeFlag" />
+      <object className="MemLong" dimension="" handle="" name="vNestNumber">
+        <param index="" name="value" value="4"/>
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vVir">
+        <param index="" name="forwardHandle" value="sys4/vir4" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vServiceAndTestFunctions" />
+      <object handle="" dimension="" className="MemLong" name="vBuffers"/>
+      <object className="MemText" dimension="" handle="" name="vTestBenchConfiguration" />
+
+      <object className="Reference" dimension="" handle="" name="vCSInterface">
+        <param index="" name="forwardHandle" value="csInterface4" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vClock">
+        <param index="" name="forwardHandle" value="procs/clock" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vRd">
+        <param index="" name="forwardHandle" value="rd4" />
+      </object>
+
+      <object name="vCanChannel" dimension="" handle="" className="RemoteObject">
+        <param name="gatewayHandle" index="" value="pvcGoepelCAN4" />
+        <param name="remoteObjectName" index="" value="/pvServer/dev/pxie6281/canChannel" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vTDHostInterface">
+        <param index="" name="forwardHandle" value="tdHostInterface4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS1">
+        <param index="" name="forwardHandle" value="csInterface4/userFlagFromCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS2">
+        <param index="" name="forwardHandle" value="csInterface4/userFlagFromCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS3">
+        <param index="" name="forwardHandle" value="csInterface4/userFlagFromCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS4">
+        <param index="" name="forwardHandle" value="csInterface4/userFlagFromCS4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS1">
+        <param index="" name="forwardHandle" value="csInterface4/userFlagToCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS2">
+        <param index="" name="forwardHandle" value="csInterface4/userFlagToCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS3">
+        <param index="" name="forwardHandle" value="csInterface4/userFlagToCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS4">
+        <param index="" name="forwardHandle" value="csInterface4/userFlagToCS4" />
+      </object>
+      <!--TODO: Machine Only-->
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN1Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest4DigitalOutEnableCAN1Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN2Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest4DigitalOutEnableCAN2Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest4DigitalOutEnableWAU" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest4DigitalOutEnableKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest4AnalogInUKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInIDUT">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest4AnalogInIDUT"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest4AnalogInUWAU"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableLight">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="digitalOutEnableLight"/>
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vTMCCDevice">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc4" />
+        <param index="" name="remoteObjectName" value="vir/vTMCCDevice" />
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vBoimenDecoder">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc4" />
+        <param index="" name="remoteObjectName" value="vir/vBoimenDecoder" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vTestCycleCount">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="isEolSystemtest">
+        <param index="" name="value" value="0"/>
+      </object>
+
+      <!--TODO: Lab-Tester-->
+      <!--object handle="" dimension="" className="Reference" name="vPvSocketClientKeysight">
+        <param name="forwardHandle" index="" value="com/pvSocketClientKeysight"/>
+      </object-->
+
+    </object>
+  </object>
+
+  <!-- sys5 -->
+  <object className="MemLong" dimension="" handle="" name="sys5">
+    <!-- com5 -->
+    <object className="MemLong" dimension="" handle="" name="com5">
+      <object dimension="" handle="" className="SMBConnection" name="smbConnectionLDS5">
+        <param name="mountPoint" value="/mnt/smbConnectionLDS5"/>
+      </object>
+    </object>
+    <!-- procs5 -->
+    <object className="MemLong" dimension="" handle="" name="procs5">
+      <object handle="" dimension="" className="Task" name="tliMessageDispatcher5">
+        <param name="hMessageHandler" index="" value="tli5" />
+      </object>
+      <object className="PVConsole" dimension="" handle="" name="console5">
+        <param index="" name="hConnector[0]" value="mqttConnectorSystemTools" />
+        <param index="" name="hConnector[1]" value="netConnector" />
+      </object>
+      <!-- tli5 -->
+      <object className="TLI" dimension="" handle="" name="tli5">
+        <param name="virHandle" value="vir5"/>
+        <param name="rdHandle" value="rd5"/>
+        <param name="tdHandle" value="td5"/>
+        <param name="consoleHandle" value="console5"/>
+        <param name="hErrorHandlerObj" value="pvServer/procs/errorHandler"/>
+        <!-- TODO: Needed -->
+        <!-- param index="" name="classPath" value="${user.dir}"/-->
+        <param name="callbackObject" value="csInterface5"/>
+        <param name="docLevel" value="1"/>
+        <param name="PrintStepID" value="1"/>
+        <!-- TODO: Needed? -->
+        <param name="hConnector[0]" value="netConnector"/>
+      </object>
+      <!-- csInterface5 -->
+      <object className="CSInterface" dimension="" handle="" name="csInterface5">
+        <!--TODO: Machine Only-->
+        <object className="CSEtherCATInterface" dimension="" handle="" name="csEthercatInterface5">
+          <param name="hPVClient" value="com/pvcRT"/>
+          <param name="parentPath" value="csInterfaceEcGwy/csEc5"/>
+        </object>
+        <object handle="" dimension="" className="CallbackText" name="csMessage">
+          <param name="hConnector" index="" value="netConnector"/>
+        </object>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS1"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS2"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS3"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS4"/>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS1">
+          <param name="hConnector" value="csEthercatInterface5"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS2">
+          <param name="hConnector" value="csEthercatInterface5"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS3">
+          <param name="hConnector" value="csEthercatInterface5"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS4">
+          <param name="hConnector" value="csEthercatInterface5"/>
+        </object>
+        <param name="codeBase" value="/r1/sys5/daten/typdaten"/>
+        <param name="testProgramFile" value="VI4-Intrinsic-Encrypt-EOL-TEST.jar"/>
+        <param name="hTDHostObj" value="tdHostInterface5"/>
+        <param name="hRdObj" value="rd5"/>
+        <param name="hTliObj" value="tli5"/>
+        <param name="hErrorHandlerObj" value="procs/errorHandler"/>
+        <param name="hClockObj" value="procs/clock"/>
+        <param name="TimeoutTLI" value="36000"/>
+        <param name="taskIdleTime" value="1000"/>
+        <param name="hVirNestNrObj" value="vir5/vNestNumber"/>
+      </object>
+      <!-- tdHostInterface5 -->
+      <object className="TDHostInterface" dimension="" handle="" name="tdHostInterface5">
+        <param name="tdRootHandle" index="" value="td5"/>
+        <param name="rdRootHandle" index="" value="rd5"/>
+        <param name="lineName" index="" value=""/>
+        <param name="pmLineName" index="" value=""/>
+        <param name="cellAddress" index="" value=""/>
+        <param name="cellResultDir" index="" value=""/>
+        <param name="cellFTPUserName" index="" value=""/>
+        <param name="cellFTPPassword" index="" value=""/>
+        <param name="localResultDir" index="" value="/r1/sys5/daten/"/>
+        <param name="stationFunction" value=""/>
+        <param name="partIdentifyFlag" value="1"/>
+        <param name="localProgramDir" index="" value="/r1/sys5/daten/typdaten/"/>
+        <param name="eraseLocalProgramDir" value="1"/>
+        <param name="standalone" value="0"/>
+        <param name="moduleAddress" value=""/>
+        <param name="copyTaskIdleTime" value="2000"/>
+        <param name="useDoubleValuesOnly" value="1"/>
+      </object>
+    </object>
+    <!-- td5 rd5 -->
+    <object className="MemLong" dimension="" handle="" name="td5" />
+    <object className="ResultDataHeader" dimension="" handle="" name="rd5">
+      <param index="" name="fixedTraceIDs" value="" />
+      <param index="" name="hConnector" value="mqttConnectorSystemTools" />
+    </object>
+    <!-- vir5 -->
+    <object className="MemLong" dimension="" handle="" name="vir5">
+      <!-- TODO: Needed for newer versions? -->
+      <object handle="" dimension="" className="Reference" name="vMQTTConnectionTSToolsAsync">
+        <param name="forwardHandle" index="" value="com/mqttConnectorSystemTools/async"/>
+      </object>
+
+      <!-- TODO: für alle Instanzen umbenennen -->
+      <object className="Reference" handle="" dimension="" name="vResouceManagerTMCC">
+        <param name="forwardHandle" index="" value="procs/resouceManagerTMCC" />
+      </object>
+      <object className="Reference" handle="" dimension="" name="vResourceManagerLightSource">
+        <param name="forwardHandle" index="" value="procs/resourceManagerLightSource" />
+      </object>
+
+      <object handle="" dimension="" className="Reference" name="vLDSSMBConnection">
+        <param name="forwardHandle" index="" value="sys5/com5/smbConnectionLDS5"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vModeFlag" />
+      <object className="MemLong" dimension="" handle="" name="vNestNumber">
+        <param index="" name="value" value="5"/>
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vVir">
+        <param index="" name="forwardHandle" value="sys5/vir5" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vServiceAndTestFunctions" />
+      <object handle="" dimension="" className="MemLong" name="vBuffers"/>
+      <object className="MemText" dimension="" handle="" name="vTestBenchConfiguration" />
+
+      <object className="Reference" dimension="" handle="" name="vCSInterface">
+        <param index="" name="forwardHandle" value="csInterface5" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vClock">
+        <param index="" name="forwardHandle" value="procs/clock" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vRd">
+        <param index="" name="forwardHandle" value="rd5" />
+      </object>
+
+      <object name="vCanChannel" dimension="" handle="" className="RemoteObject">
+        <param name="gatewayHandle" index="" value="pvcGoepelCAN5" />
+        <param name="remoteObjectName" index="" value="/pvServer/dev/pxie6281/canChannel" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vTDHostInterface">
+        <param index="" name="forwardHandle" value="tdHostInterface5" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS1">
+        <param index="" name="forwardHandle" value="csInterface5/userFlagFromCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS2">
+        <param index="" name="forwardHandle" value="csInterface5/userFlagFromCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS3">
+        <param index="" name="forwardHandle" value="csInterface5/userFlagFromCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS4">
+        <param index="" name="forwardHandle" value="csInterface5/userFlagFromCS4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS1">
+        <param index="" name="forwardHandle" value="csInterface5/userFlagToCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS2">
+        <param index="" name="forwardHandle" value="csInterface5/userFlagToCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS3">
+        <param index="" name="forwardHandle" value="csInterface5/userFlagToCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS4">
+        <param index="" name="forwardHandle" value="csInterface5/userFlagToCS4" />
+      </object>
+      <!--TODO: Machine Only-->
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN1Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest5DigitalOutEnableCAN1Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN2Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest5DigitalOutEnableCAN2Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest5DigitalOutEnableWAU" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest5DigitalOutEnableKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest5AnalogInUKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInIDUT">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest5AnalogInIDUT"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest5AnalogInUWAU"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableLight">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="digitalOutEnableLight"/>
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vTMCCDevice">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc5" />
+        <param index="" name="remoteObjectName" value="vir/vTMCCDevice" />
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vBoimenDecoder">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc5" />
+        <param index="" name="remoteObjectName" value="vir/vBoimenDecoder" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vTestCycleCount">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="isEolSystemtest">
+        <param index="" name="value" value="0"/>
+      </object>
+
+      <!--TODO: Lab-Tester-->
+      <!--object handle="" dimension="" className="Reference" name="vPvSocketClientKeysight">
+        <param name="forwardHandle" index="" value="com/pvSocketClientKeysight"/>
+      </object-->
+
+    </object>
+  </object>
+
+  <!-- sys6 -->
+  <object className="MemLong" dimension="" handle="" name="sys6">
+    <!-- com6 -->
+    <object className="MemLong" dimension="" handle="" name="com6">
+      <object dimension="" handle="" className="SMBConnection" name="smbConnectionLDS6">
+        <param name="mountPoint" value="/mnt/smbConnectionLDS6"/>
+      </object>
+    </object>
+    <!-- procs6 -->
+    <object className="MemLong" dimension="" handle="" name="procs6">
+      <object handle="" dimension="" className="Task" name="tliMessageDispatcher6">
+        <param name="hMessageHandler" index="" value="tli6" />
+      </object>
+      <object className="PVConsole" dimension="" handle="" name="console6">
+        <param index="" name="hConnector[0]" value="mqttConnectorSystemTools" />
+        <param index="" name="hConnector[1]" value="netConnector" />
+      </object>
+      <!-- tli6 -->
+      <object className="TLI" dimension="" handle="" name="tli6">
+        <param name="virHandle" value="vir6"/>
+        <param name="rdHandle" value="rd6"/>
+        <param name="tdHandle" value="td6"/>
+        <param name="consoleHandle" value="console6"/>
+        <param name="hErrorHandlerObj" value="pvServer/procs/errorHandler"/>
+        <!-- TODO: Needed -->
+        <!-- param index="" name="classPath" value="${user.dir}"/-->
+        <param name="callbackObject" value="csInterface6"/>
+        <param name="docLevel" value="1"/>
+        <param name="PrintStepID" value="1"/>
+        <!-- TODO: Needed? -->
+        <param name="hConnector[0]" value="netConnector"/>
+      </object>
+      <!-- csInterface6 -->
+      <object className="CSInterface" dimension="" handle="" name="csInterface6">
+        <!--TODO: Machine Only-->
+        <object className="CSEtherCATInterface" dimension="" handle="" name="csEthercatInterface6">
+          <param name="hPVClient" value="com/pvcRT"/>
+          <param name="parentPath" value="csInterfaceEcGwy/csEc6"/>
+        </object>
+        <object handle="" dimension="" className="CallbackText" name="csMessage">
+          <param name="hConnector" index="" value="netConnector"/>
+        </object>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS1"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS2"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS3"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS4"/>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS1">
+          <param name="hConnector" value="csEthercatInterface6"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS2">
+          <param name="hConnector" value="csEthercatInterface6"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS3">
+          <param name="hConnector" value="csEthercatInterface6"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS4">
+          <param name="hConnector" value="csEthercatInterface6"/>
+        </object>
+        <param name="codeBase" value="/r1/sys6/daten/typdaten"/>
+        <param name="testProgramFile" value="VI4-Intrinsic-Encrypt-EOL-TEST.jar"/>
+        <param name="hTDHostObj" value="tdHostInterface6"/>
+        <param name="hRdObj" value="rd6"/>
+        <param name="hTliObj" value="tli6"/>
+        <param name="hErrorHandlerObj" value="procs/errorHandler"/>
+        <param name="hClockObj" value="procs/clock"/>
+        <param name="TimeoutTLI" value="36000"/>
+        <param name="taskIdleTime" value="1000"/>
+        <param name="hVirNestNrObj" value="vir6/vNestNumber"/>
+      </object>
+      <!-- tdHostInterface6 -->
+      <object className="TDHostInterface" dimension="" handle="" name="tdHostInterface6">
+        <param name="tdRootHandle" index="" value="td6"/>
+        <param name="rdRootHandle" index="" value="rd6"/>
+        <param name="lineName" index="" value=""/>
+        <param name="pmLineName" index="" value=""/>
+        <param name="cellAddress" index="" value=""/>
+        <param name="cellResultDir" index="" value=""/>
+        <param name="cellFTPUserName" index="" value=""/>
+        <param name="cellFTPPassword" index="" value=""/>
+        <param name="localResultDir" index="" value="/r1/sys6/daten/"/>
+        <param name="stationFunction" value=""/>
+        <param name="partIdentifyFlag" value="1"/>
+        <param name="localProgramDir" index="" value="/r1/sys6/daten/typdaten/"/>
+        <param name="eraseLocalProgramDir" value="1"/>
+        <param name="standalone" value="0"/>
+        <param name="moduleAddress" value=""/>
+        <param name="copyTaskIdleTime" value="2000"/>
+        <param name="useDoubleValuesOnly" value="1"/>
+      </object>
+    </object>
+    <!-- td6 rd6 -->
+    <object className="MemLong" dimension="" handle="" name="td6" />
+    <object className="ResultDataHeader" dimension="" handle="" name="rd6">
+      <param index="" name="fixedTraceIDs" value="" />
+      <param index="" name="hConnector" value="mqttConnectorSystemTools" />
+    </object>
+    <!-- vir6 -->
+    <object className="MemLong" dimension="" handle="" name="vir6">
+      <!-- TODO: Needed for newer versions? -->
+      <object handle="" dimension="" className="Reference" name="vMQTTConnectionTSToolsAsync">
+        <param name="forwardHandle" index="" value="com/mqttConnectorSystemTools/async"/>
+      </object>
+
+      <!-- TODO: für alle Instanzen umbenennen -->
+      <object className="Reference" handle="" dimension="" name="vResouceManagerTMCC">
+        <param name="forwardHandle" index="" value="procs/resouceManagerTMCC" />
+      </object>
+      <object className="Reference" handle="" dimension="" name="vResourceManagerLightSource">
+        <param name="forwardHandle" index="" value="procs/resourceManagerLightSource" />
+      </object>
+
+      <object handle="" dimension="" className="Reference" name="vLDSSMBConnection">
+        <param name="forwardHandle" index="" value="sys6/com6/smbConnectionLDS6"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vModeFlag" />
+      <object className="MemLong" dimension="" handle="" name="vNestNumber">
+        <param index="" name="value" value="6"/>
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vVir">
+        <param index="" name="forwardHandle" value="sys6/vir6" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vServiceAndTestFunctions" />
+      <object handle="" dimension="" className="MemLong" name="vBuffers"/>
+      <object className="MemText" dimension="" handle="" name="vTestBenchConfiguration" />
+
+      <object className="Reference" dimension="" handle="" name="vCSInterface">
+        <param index="" name="forwardHandle" value="csInterface6" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vClock">
+        <param index="" name="forwardHandle" value="procs/clock" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vRd">
+        <param index="" name="forwardHandle" value="rd6" />
+      </object>
+
+      <object name="vCanChannel" dimension="" handle="" className="RemoteObject">
+        <param name="gatewayHandle" index="" value="pvcGoepelCAN6" />
+        <param name="remoteObjectName" index="" value="/pvServer/dev/pxie6281/canChannel" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vTDHostInterface">
+        <param index="" name="forwardHandle" value="tdHostInterface6" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS1">
+        <param index="" name="forwardHandle" value="csInterface6/userFlagFromCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS2">
+        <param index="" name="forwardHandle" value="csInterface6/userFlagFromCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS3">
+        <param index="" name="forwardHandle" value="csInterface6/userFlagFromCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS4">
+        <param index="" name="forwardHandle" value="csInterface6/userFlagFromCS4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS1">
+        <param index="" name="forwardHandle" value="csInterface6/userFlagToCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS2">
+        <param index="" name="forwardHandle" value="csInterface6/userFlagToCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS3">
+        <param index="" name="forwardHandle" value="csInterface6/userFlagToCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS4">
+        <param index="" name="forwardHandle" value="csInterface6/userFlagToCS4" />
+      </object>
+      <!--TODO: Machine Only-->
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN1Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest6DigitalOutEnableCAN1Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN2Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest6DigitalOutEnableCAN2Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest6DigitalOutEnableWAU" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest6DigitalOutEnableKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest6AnalogInUKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInIDUT">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest6AnalogInIDUT"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest6AnalogInUWAU"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableLight">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="digitalOutEnableLight"/>
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vTMCCDevice">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc6" />
+        <param index="" name="remoteObjectName" value="vir/vTMCCDevice" />
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vBoimenDecoder">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc6" />
+        <param index="" name="remoteObjectName" value="vir/vBoimenDecoder" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vTestCycleCount">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="isEolSystemtest">
+        <param index="" name="value" value="0"/>
+      </object>
+
+      <!--TODO: Lab-Tester-->
+      <!--object handle="" dimension="" className="Reference" name="vPvSocketClientKeysight">
+        <param name="forwardHandle" index="" value="com/pvSocketClientKeysight"/>
+      </object-->
+
+    </object>
+  </object>
+
+  <!-- sys7 -->
+  <object className="MemLong" dimension="" handle="" name="sys7">
+    <!-- com7 -->
+    <object className="MemLong" dimension="" handle="" name="com7">
+      <object dimension="" handle="" className="SMBConnection" name="smbConnectionLDS7">
+        <param name="mountPoint" value="/mnt/smbConnectionLDS7"/>
+      </object>
+    </object>
+    <!-- procs7 -->
+    <object className="MemLong" dimension="" handle="" name="procs7">
+      <object handle="" dimension="" className="Task" name="tliMessageDispatcher7">
+        <param name="hMessageHandler" index="" value="tli7" />
+      </object>
+      <object className="PVConsole" dimension="" handle="" name="console7">
+        <param index="" name="hConnector[0]" value="mqttConnectorSystemTools" />
+        <param index="" name="hConnector[1]" value="netConnector" />
+      </object>
+      <!-- tli7 -->
+      <object className="TLI" dimension="" handle="" name="tli7">
+        <param name="virHandle" value="vir7"/>
+        <param name="rdHandle" value="rd7"/>
+        <param name="tdHandle" value="td7"/>
+        <param name="consoleHandle" value="console7"/>
+        <param name="hErrorHandlerObj" value="pvServer/procs/errorHandler"/>
+        <!-- TODO: Needed -->
+        <!-- param index="" name="classPath" value="${user.dir}"/-->
+        <param name="callbackObject" value="csInterface7"/>
+        <param name="docLevel" value="1"/>
+        <param name="PrintStepID" value="1"/>
+        <!-- TODO: Needed? -->
+        <param name="hConnector[0]" value="netConnector"/>
+      </object>
+      <!-- csInterface7 -->
+      <object className="CSInterface" dimension="" handle="" name="csInterface7">
+        <!--TODO: Machine Only-->
+        <object className="CSEtherCATInterface" dimension="" handle="" name="csEthercatInterface7">
+          <param name="hPVClient" value="com/pvcRT"/>
+          <param name="parentPath" value="csInterfaceEcGwy/csEc7"/>
+        </object>
+        <object handle="" dimension="" className="CallbackText" name="csMessage">
+          <param name="hConnector" index="" value="netConnector"/>
+        </object>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS1"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS2"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS3"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS4"/>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS1">
+          <param name="hConnector" value="csEthercatInterface7"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS2">
+          <param name="hConnector" value="csEthercatInterface7"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS3">
+          <param name="hConnector" value="csEthercatInterface7"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS4">
+          <param name="hConnector" value="csEthercatInterface7"/>
+        </object>
+        <param name="codeBase" value="/r1/sys7/daten/typdaten"/>
+        <param name="testProgramFile" value="VI4-Intrinsic-Encrypt-EOL-TEST.jar"/>
+        <param name="hTDHostObj" value="tdHostInterface7"/>
+        <param name="hRdObj" value="rd7"/>
+        <param name="hTliObj" value="tli7"/>
+        <param name="hErrorHandlerObj" value="procs/errorHandler"/>
+        <param name="hClockObj" value="procs/clock"/>
+        <param name="TimeoutTLI" value="36000"/>
+        <param name="taskIdleTime" value="1000"/>
+        <param name="hVirNestNrObj" value="vir7/vNestNumber"/>
+      </object>
+      <!-- tdHostInterface7 -->
+      <object className="TDHostInterface" dimension="" handle="" name="tdHostInterface7">
+        <param name="tdRootHandle" index="" value="td7"/>
+        <param name="rdRootHandle" index="" value="rd7"/>
+        <param name="lineName" index="" value=""/>
+        <param name="pmLineName" index="" value=""/>
+        <param name="cellAddress" index="" value=""/>
+        <param name="cellResultDir" index="" value=""/>
+        <param name="cellFTPUserName" index="" value=""/>
+        <param name="cellFTPPassword" index="" value=""/>
+        <param name="localResultDir" index="" value="/r1/sys7/daten/"/>
+        <param name="stationFunction" value=""/>
+        <param name="partIdentifyFlag" value="1"/>
+        <param name="localProgramDir" index="" value="/r1/sys7/daten/typdaten/"/>
+        <param name="eraseLocalProgramDir" value="1"/>
+        <param name="standalone" value="0"/>
+        <param name="moduleAddress" value=""/>
+        <param name="copyTaskIdleTime" value="2000"/>
+        <param name="useDoubleValuesOnly" value="1"/>
+      </object>
+    </object>
+    <!-- td7 rd7 -->
+    <object className="MemLong" dimension="" handle="" name="td7" />
+    <object className="ResultDataHeader" dimension="" handle="" name="rd7">
+      <param index="" name="fixedTraceIDs" value="" />
+      <param index="" name="hConnector" value="mqttConnectorSystemTools" />
+    </object>
+    <!-- vir7 -->
+    <object className="MemLong" dimension="" handle="" name="vir7">
+      <!-- TODO: Needed for newer versions? -->
+      <object handle="" dimension="" className="Reference" name="vMQTTConnectionTSToolsAsync">
+        <param name="forwardHandle" index="" value="com/mqttConnectorSystemTools/async"/>
+      </object>
+
+      <!-- TODO: für alle Instanzen umbenennen -->
+      <object className="Reference" handle="" dimension="" name="vResouceManagerTMCC">
+        <param name="forwardHandle" index="" value="procs/resouceManagerTMCC" />
+      </object>
+      <object className="Reference" handle="" dimension="" name="vResourceManagerLightSource">
+        <param name="forwardHandle" index="" value="procs/resourceManagerLightSource" />
+      </object>
+
+      <object handle="" dimension="" className="Reference" name="vLDSSMBConnection">
+        <param name="forwardHandle" index="" value="sys7/com7/smbConnectionLDS7"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vModeFlag" />
+      <object className="MemLong" dimension="" handle="" name="vNestNumber">
+        <param index="" name="value" value="7"/>
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vVir">
+        <param index="" name="forwardHandle" value="sys7/vir7" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vServiceAndTestFunctions" />
+      <object handle="" dimension="" className="MemLong" name="vBuffers"/>
+      <object className="MemText" dimension="" handle="" name="vTestBenchConfiguration" />
+
+      <object className="Reference" dimension="" handle="" name="vCSInterface">
+        <param index="" name="forwardHandle" value="csInterface7" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vClock">
+        <param index="" name="forwardHandle" value="procs/clock" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vRd">
+        <param index="" name="forwardHandle" value="rd7" />
+      </object>
+
+      <object name="vCanChannel" dimension="" handle="" className="RemoteObject">
+        <param name="gatewayHandle" index="" value="pvcGoepelCAN7" />
+        <param name="remoteObjectName" index="" value="/pvServer/dev/pxie6281/canChannel" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vTDHostInterface">
+        <param index="" name="forwardHandle" value="tdHostInterface7" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS1">
+        <param index="" name="forwardHandle" value="csInterface7/userFlagFromCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS2">
+        <param index="" name="forwardHandle" value="csInterface7/userFlagFromCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS3">
+        <param index="" name="forwardHandle" value="csInterface7/userFlagFromCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS4">
+        <param index="" name="forwardHandle" value="csInterface7/userFlagFromCS4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS1">
+        <param index="" name="forwardHandle" value="csInterface7/userFlagToCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS2">
+        <param index="" name="forwardHandle" value="csInterface7/userFlagToCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS3">
+        <param index="" name="forwardHandle" value="csInterface7/userFlagToCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS4">
+        <param index="" name="forwardHandle" value="csInterface7/userFlagToCS4" />
+      </object>
+      <!--TODO: Machine Only-->
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN1Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest7DigitalOutEnableCAN1Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN2Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest7DigitalOutEnableCAN2Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest7DigitalOutEnableWAU" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest7DigitalOutEnableKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest7AnalogInUKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInIDUT">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest7AnalogInIDUT"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest7AnalogInUWAU"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableLight">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="digitalOutEnableLight"/>
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vTMCCDevice">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc7" />
+        <param index="" name="remoteObjectName" value="vir/vTMCCDevice" />
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vBoimenDecoder">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc7" />
+        <param index="" name="remoteObjectName" value="vir/vBoimenDecoder" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vTestCycleCount">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="isEolSystemtest">
+        <param index="" name="value" value="0"/>
+      </object>
+
+      <!--TODO: Lab-Tester-->
+      <!--object handle="" dimension="" className="Reference" name="vPvSocketClientKeysight">
+        <param name="forwardHandle" index="" value="com/pvSocketClientKeysight"/>
+      </object-->
+
+    </object>
+  </object>
+
+  <!-- sys8 -->
+  <object className="MemLong" dimension="" handle="" name="sys8">
+    <!-- com8 -->
+    <object className="MemLong" dimension="" handle="" name="com8">
+      <object dimension="" handle="" className="SMBConnection" name="smbConnectionLDS8">
+        <param name="mountPoint" value="/mnt/smbConnectionLDS8"/>
+      </object>
+    </object>
+    <!-- procs8 -->
+    <object className="MemLong" dimension="" handle="" name="procs8">
+      <object handle="" dimension="" className="Task" name="tliMessageDispatcher8">
+        <param name="hMessageHandler" index="" value="tli8" />
+      </object>
+      <object className="PVConsole" dimension="" handle="" name="console8">
+        <param index="" name="hConnector[0]" value="mqttConnectorSystemTools" />
+        <param index="" name="hConnector[1]" value="netConnector" />
+      </object>
+      <!-- tli8 -->
+      <object className="TLI" dimension="" handle="" name="tli8">
+        <param name="virHandle" value="vir8"/>
+        <param name="rdHandle" value="rd8"/>
+        <param name="tdHandle" value="td8"/>
+        <param name="consoleHandle" value="console8"/>
+        <param name="hErrorHandlerObj" value="pvServer/procs/errorHandler"/>
+        <!-- TODO: Needed -->
+        <!-- param index="" name="classPath" value="${user.dir}"/-->
+        <param name="callbackObject" value="csInterface8"/>
+        <param name="docLevel" value="1"/>
+        <param name="PrintStepID" value="1"/>
+        <!-- TODO: Needed? -->
+        <param name="hConnector[0]" value="netConnector"/>
+      </object>
+      <!-- csInterface8 -->
+      <object className="CSInterface" dimension="" handle="" name="csInterface8">
+        <!--TODO: Machine Only-->
+        <object className="CSEtherCATInterface" dimension="" handle="" name="csEthercatInterface8">
+          <param name="hPVClient" value="com/pvcRT"/>
+          <param name="parentPath" value="csInterfaceEcGwy/csEc8"/>
+        </object>
+        <object handle="" dimension="" className="CallbackText" name="csMessage">
+          <param name="hConnector" index="" value="netConnector"/>
+        </object>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS1"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS2"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS3"/>
+        <object className="MemLong" dimension="" handle="" name="userFlagFromCS4"/>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS1">
+          <param name="hConnector" value="csEthercatInterface8"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS2">
+          <param name="hConnector" value="csEthercatInterface8"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS3">
+          <param name="hConnector" value="csEthercatInterface8"/>
+        </object>
+        <object className="CallbackLong" dimension="" handle="" name="userFlagToCS4">
+          <param name="hConnector" value="csEthercatInterface8"/>
+        </object>
+        <param name="codeBase" value="/r1/sys8/daten/typdaten"/>
+        <param name="testProgramFile" value="VI4-Intrinsic-Encrypt-EOL-TEST.jar"/>
+        <param name="hTDHostObj" value="tdHostInterface8"/>
+        <param name="hRdObj" value="rd8"/>
+        <param name="hTliObj" value="tli8"/>
+        <param name="hErrorHandlerObj" value="procs/errorHandler"/>
+        <param name="hClockObj" value="procs/clock"/>
+        <param name="TimeoutTLI" value="36000"/>
+        <param name="taskIdleTime" value="1000"/>
+        <param name="hVirNestNrObj" value="vir8/vNestNumber"/>
+      </object>
+      <!-- tdHostInterface8 -->
+      <object className="TDHostInterface" dimension="" handle="" name="tdHostInterface8">
+        <param name="tdRootHandle" index="" value="td8"/>
+        <param name="rdRootHandle" index="" value="rd8"/>
+        <param name="lineName" index="" value=""/>
+        <param name="pmLineName" index="" value=""/>
+        <param name="cellAddress" index="" value=""/>
+        <param name="cellResultDir" index="" value=""/>
+        <param name="cellFTPUserName" index="" value=""/>
+        <param name="cellFTPPassword" index="" value=""/>
+        <param name="localResultDir" index="" value="/r1/sys8/daten/"/>
+        <param name="stationFunction" value=""/>
+        <param name="partIdentifyFlag" value="1"/>
+        <param name="localProgramDir" index="" value="/r1/sys8/daten/typdaten/"/>
+        <param name="eraseLocalProgramDir" value="1"/>
+        <param name="standalone" value="0"/>
+        <param name="moduleAddress" value=""/>
+        <param name="copyTaskIdleTime" value="2000"/>
+        <param name="useDoubleValuesOnly" value="1"/>
+      </object>
+    </object>
+    <!-- td8 rd8 -->
+    <object className="MemLong" dimension="" handle="" name="td8" />
+    <object className="ResultDataHeader" dimension="" handle="" name="rd8">
+      <param index="" name="fixedTraceIDs" value="" />
+      <param index="" name="hConnector" value="mqttConnectorSystemTools" />
+    </object>
+    <!-- vir8 -->
+    <object className="MemLong" dimension="" handle="" name="vir8">
+      <!-- TODO: Needed for newer versions? -->
+      <object handle="" dimension="" className="Reference" name="vMQTTConnectionTSToolsAsync">
+        <param name="forwardHandle" index="" value="com/mqttConnectorSystemTools/async"/>
+      </object>
+
+      <!-- TODO: für alle Instanzen umbenennen -->
+      <object className="Reference" handle="" dimension="" name="vResouceManagerTMCC">
+        <param name="forwardHandle" index="" value="procs/resouceManagerTMCC" />
+      </object>
+      <object className="Reference" handle="" dimension="" name="vResourceManagerLightSource">
+        <param name="forwardHandle" index="" value="procs/resourceManagerLightSource" />
+      </object>
+
+      <object handle="" dimension="" className="Reference" name="vLDSSMBConnection">
+        <param name="forwardHandle" index="" value="sys8/com8/smbConnectionLDS8"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vModeFlag" />
+      <object className="MemLong" dimension="" handle="" name="vNestNumber">
+        <param index="" name="value" value="8"/>
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vVir">
+        <param index="" name="forwardHandle" value="sys8/vir8" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vServiceAndTestFunctions" />
+      <object handle="" dimension="" className="MemLong" name="vBuffers"/>
+      <object className="MemText" dimension="" handle="" name="vTestBenchConfiguration" />
+
+      <object className="Reference" dimension="" handle="" name="vCSInterface">
+        <param index="" name="forwardHandle" value="csInterface8" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vClock">
+        <param index="" name="forwardHandle" value="procs/clock" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vRd">
+        <param index="" name="forwardHandle" value="rd8" />
+      </object>
+
+      <object name="vCanChannel" dimension="" handle="" className="RemoteObject">
+        <param name="gatewayHandle" index="" value="pvcGoepelCAN8" />
+        <param name="remoteObjectName" index="" value="/pvServer/dev/pxie6281/canChannel" />
+      </object>
+
+      <object className="Reference" dimension="" handle="" name="vTDHostInterface">
+        <param index="" name="forwardHandle" value="tdHostInterface8" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS1">
+        <param index="" name="forwardHandle" value="csInterface8/userFlagFromCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS2">
+        <param index="" name="forwardHandle" value="csInterface8/userFlagFromCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS3">
+        <param index="" name="forwardHandle" value="csInterface8/userFlagFromCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagFromCS4">
+        <param index="" name="forwardHandle" value="csInterface8/userFlagFromCS4" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS1">
+        <param index="" name="forwardHandle" value="csInterface8/userFlagToCS1" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS2">
+        <param index="" name="forwardHandle" value="csInterface8/userFlagToCS2" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS3">
+        <param index="" name="forwardHandle" value="csInterface8/userFlagToCS3" />
+      </object>
+      <object className="Reference" dimension="" handle="" name="vUserFlagToCS4">
+        <param index="" name="forwardHandle" value="csInterface8/userFlagToCS4" />
+      </object>
+      <!--TODO: Machine Only-->
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN1Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest8DigitalOutEnableCAN1Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableCAN2Term">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest8DigitalOutEnableCAN2Term" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest8DigitalOutEnableWAU" />
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest8DigitalOutEnableKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUKL15">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest8AnalogInUKL15"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInIDUT">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest8AnalogInIDUT"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vAnalogInUWAU">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="nest8AnalogInUWAU"/>
+      </object>
+      <object className="RemoteObject" dimension="" handle="" name="vDigitalOutEnableLight">
+        <param index="" name="gatewayHandle" value="pvcRT" />
+        <param index="" name="remoteObjectName" value="digitalOutEnableLight"/>
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vTMCCDevice">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc8" />
+        <param index="" name="remoteObjectName" value="vir/vTMCCDevice" />
+      </object>
+
+      <object className="RemoteObject" dimension="" handle="" name="vBoimenDecoder">
+        <param index="" name="gatewayHandle" value="pvcMicroSpexTmcc8" />
+        <param index="" name="remoteObjectName" value="vir/vBoimenDecoder" />
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="vTestCycleCount">
+        <param index="" name="value" value="1"/>
+      </object>
+
+      <object className="MemLong" dimension="" handle="" name="isEolSystemtest">
+        <param index="" name="value" value="0"/>
+      </object>
+
+      <!--TODO: Lab-Tester-->
+      <!--object handle="" dimension="" className="Reference" name="vPvSocketClientKeysight">
+        <param name="forwardHandle" index="" value="com/pvSocketClientKeysight"/>
+      </object-->
+
+    </object>
+  </object>
+
+</configuration>

@@ -13,7 +13,7 @@ configuration = new PVServer {
         }
         new SocketConnector {
           name = "webSocket"
-          portNo = 5010
+          portNo = 5001
           loggingEnabled = 0
         }
         new ErrorHandler {

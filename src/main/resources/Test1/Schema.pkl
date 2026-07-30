@@ -1,0 +1,75 @@
+module SpexConfig
+
+configuration: PVServer = new PVServer {
+  name = "test"
+}
+
+/// Base class for system objects with common properties
+abstract class PVObject {
+  name: String = ""
+  handle: Int = 0
+  dimension: Int = 1
+  classType: String
+  children: Listing<PVObject>?
+  forwardHandle: (Int|String)?
+  gatewayHandle: PVClient?
+}
+
+open class PVServer extends PVObject {
+  classType = "PVServer"
+  handle = 1
+}
+
+/// Remote connection client to other test systems (PVGateway)
+open class PVClient extends PVObject {
+  classType = "PVClient"
+  /// TCP/IP port number (REQUIRED)
+  port: Int
+   /// Hostname or IP address of remote device (REQUIRED)
+   /// Pattern: hostname starting with letter, or valid IPv4 address
+   hostName: String(matches(Regex("^([a-zA-Z][\\w\\.]*)|([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})"))) = "localhost"
+  /// Protocol (0=plain Socket) (OPTIONAL)
+  protocol: Int?
+  /// Log mode for communication: 0=no logging 1=full logging 2=debug 3=trace (OPTIONAL)
+  loggingEnabled: Int? = 0
+  /// Number of attempts to connect to the target (OPTIONAL)
+  retryCount: Int? = 100
+  /// Timeout after a retry is started (in ms) (OPTIONAL)
+  timeout: Int? = 2500
+  /// Description of the connection (only information) (OPTIONAL)
+  description: String?
+  /// Handle of lookup object (OPTIONAL)
+  hLookup: PVObject?
+  /// Set to support async messages (OPTIONAL)
+  asyncEnabled: Int?
+  /// The SocketConnector for sending asynchronous messages (needed if asyncEnabled=1) (OPTIONAL)
+  hConnector: Listing<PVObject>?
+  /// The process object which administrates the application (OPTIONAL)
+  hSubProcess: PVObject?
+  /// 0=No resend (e.g. if expected value will not be valid) (OPTIONAL)
+  resendAfterReconnect: Int? = 1
+  /// 1=client will ask for binary responses for faster transfer (OPTIONAL)
+  useBinaryResponse: Int?
+  /// 1=client will use big packet for faster transfer (OPTIONAL)
+  useBigPacket: Int?
+  /// 1=client is connected (OPTIONAL)
+  isConnected: Int?
+  /// Use future packages (OPTIONAL)
+   useFuturePacket: Int?
+}
+
+/// Structure-element for device/hardware objects
+open class Dev extends PVObject {
+  classType = "Dev"
+
+  /// Integer value (OPTIONAL)
+  value: Int?
+}
+
+open class Timer extends PVObject {
+  classType = "Timer"
+}
+
+open class PVSystem extends PVObject {
+  classType = "PVSystem"
+}

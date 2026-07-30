@@ -1,0 +1,24 @@
+amends "Schema.pkl"
+
+configuration {
+  children {
+    new Dev {
+      name = "dev"
+      children {
+        new Timer {
+          name = "timer"
+        }
+        new PVSystem {
+          name = "pvSystem"
+        }
+        for( i : Int in IntSeq(1,3)) {
+          new PVClient {
+            name = "pvClient\(i)"
+            hostName = "123.4.3.4"
+            port = 5002 + i
+          }
+        }
+      }
+    }
+  }
+}

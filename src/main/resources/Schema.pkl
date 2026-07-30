@@ -10,7 +10,7 @@ abstract class PVObject {
   name: String = ""
   handle: Int = 0
   dimension: Int = 1
-  classType: String?
+  classType: String
   children: Listing<PVObject>?
 }
 
@@ -22,7 +22,7 @@ open class PVServer extends PVObject {
 /// Socket connector for network communication
 open class SocketConnector extends PVObject {
   classType = "SocketConnector"
-  portNo: (Int|String)?
+  portNo: Int(this > 5000 && this < 6000)
   loggingEnabled: (Int|String)?
   protocol: (Int|String)?
 }
