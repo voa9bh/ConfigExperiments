@@ -20,9 +20,8 @@ local config = new Mapping<String,PVObject> {
     ["procs\(i)"] = DefaultBlocks.createDefaultProcs("\(i)")
   }
 }
-// ── Pass 2: override existing values by amending the base ──
-// NOTE: use `["key"] { ... }` (amend), not `["key"] = new ...` (replace).
-// You can't define `configuration` twice, so amend the local `config` instead.
+
+// ── Pass 2: fixup some parameters (just for fun) ──
 configuration = (config) {
   ["dev"] {
     children {
