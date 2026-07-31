@@ -102,153 +102,21 @@ local function fixupNames(m: Mapping<String, PVObject>): Mapping<String, PVObjec
     )
     .toMapping()
 
-/// Helper function to get all properties of a PVClient that should be rendered as <param> tags
-local function getPVClientParams(pvClient: PVClient): Listing = new {
-  (xml.Element("param")) {
-    attributes {
-      ["name"] = "port"
-      ["value"] = pvClient.port
-      ["index"] = ""
-    }
-  }
-  (xml.Element("param")) {
-    attributes {
-      ["name"] = "hostName"
-      ["value"] = pvClient.hostName
-      ["index"] = ""
-    }
-  }
-  when (pvClient.protocol != null) {
+/// Helper function to render a single param element
+/// Handles String, Int, List, and PVObject values
+local function renderParam(name: String, value: (String | Int | List<String | Int> | PVObject)?): Listing = new {
+  when (value != null) {
     (xml.Element("param")) {
       attributes {
-        ["name"] = "protocol"
-        ["value"] = pvClient.protocol
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.loggingEnabled != null && pvClient.loggingEnabled != 0) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "loggingEnabled"
-        ["value"] = pvClient.loggingEnabled
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.retryCount != null && pvClient.retryCount != 100) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "retryCount"
-        ["value"] = pvClient.retryCount
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.timeout != null && pvClient.timeout != 2500) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "timeout"
-        ["value"] = pvClient.timeout
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.description != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "description"
-        ["value"] = pvClient.description
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.hLookup != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "hLookup"
-        ["value"] = pvClient.hLookup.name
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.hConnector != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "hConnector"
-        ["value"] = if (pvClient.hConnector!!.length == 1) pvClient.hConnector!!.first.name else pvClient.hConnector!!.map((it) -> it.name).join(";")
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.hSubProcess != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "hSubProcess"
-        ["value"] = pvClient.hSubProcess.name
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.resendAfterReconnect != null && pvClient.resendAfterReconnect != 1) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "resendAfterReconnect"
-        ["value"] = pvClient.resendAfterReconnect
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.useBinaryResponse != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "useBinaryResponse"
-        ["value"] = pvClient.useBinaryResponse
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.useBigPacket != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "useBigPacket"
-        ["value"] = pvClient.useBigPacket
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.isConnected != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "isConnected"
-        ["value"] = pvClient.isConnected
-        ["index"] = ""
-      }
-    }
-  }
-  when (pvClient.useFuturePacket != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "useFuturePacket"
-        ["value"] = pvClient.useFuturePacket
-        ["index"] = ""
-      }
-    }
-  }
-}
-
-/// Helper function to get properties of a PVConsole that should be rendered as <param> tags
-local function getPVConsoleParams(pvConsole: PVConsole): Listing = new {
-  when (pvConsole.hConnector != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "hConnector"
-        ["value"] = if (pvConsole.hConnector!! is String)
-          pvConsole.hConnector!! as String
-        else if (pvConsole.hConnector!! is Int)
-          (pvConsole.hConnector!! as Int).toString()
-        else if (pvConsole.hConnector!! is List<String | Int>)
-          (pvConsole.hConnector!! as List<String | Int>).map((it) -> it.toString()).join(";")
+        ["name"] = name
+        ["value"] = if (value is String)
+          value as String
+        else if (value is Int)
+          (value as Int).toString()
+        else if (value is List<String | Int>)
+          (value as List<String | Int>).map((it) -> it.toString()).join(";")
+        else if (value is PVObject)
+          (value as PVObject).name
         else
           ""
         ["index"] = ""
@@ -257,51 +125,93 @@ local function getPVConsoleParams(pvConsole: PVConsole): Listing = new {
   }
 }
 
-/// Helper function to get all properties of a PVObject that should be rendered as <param> tags
-local function getParams(node: PVObject): Listing = new {
-  when (node.handle != 0) {
+/// Helper function to render a union type value that could be String, Int, or List
+local function renderUnionParam(name: String, value: (String | Int | List<String | Int>)?): Listing = new {
+  when (value != null) {
     (xml.Element("param")) {
       attributes {
-        ["name"] = "handle"
-        ["value"] = node.handle
+        ["name"] = name
+        ["value"] = if (value is String)
+          value as String
+        else if (value is Int)
+          (value as Int).toString()
+        else if (value is List<String | Int>)
+          (value as List<String | Int>).map((it) -> it.toString()).join(";")
+        else
+          ""
         ["index"] = ""
       }
     }
+  }
+}
+
+/// Generic function to render properties of any PVObject
+/// Automatically renders non-null, non-default properties as <param> tags
+local function getParams(node: PVObject): Listing = new {
+  // Render base class properties
+  when (node.handle != 0) {
+    ...renderParam("handle", node.handle)
   }
   when (node.dimension != 0 && node.dimension != 1) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "dimension"
-        ["value"] = node.dimension
-        ["index"] = ""
-      }
-    }
+    ...renderParam("dimension", node.dimension)
   }
   when (node.forwardHandle != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "forwardHandle"
-        ["value"] = node.forwardHandle.toString()
-        ["index"] = ""
-      }
-    }
+    ...renderParam("forwardHandle", node.forwardHandle.toString())
   }
   when (node.gatewayHandle != null) {
-    (xml.Element("param")) {
-      attributes {
-        ["name"] = "gatewayHandle"
-        ["value"] = node.gatewayHandle.name
-        ["index"] = ""
-      }
+    ...renderParam("gatewayHandle", node.gatewayHandle)
+  }
+
+  // Render type-specific properties for PVClient
+  when (node is PVClient) {
+    ...renderParam("port", (node as PVClient).port)
+    ...renderParam("hostName", (node as PVClient).hostName)
+    when ((node as PVClient).protocol != null) {
+      ...renderParam("protocol", (node as PVClient).protocol)
+    }
+    when ((node as PVClient).loggingEnabled != null && (node as PVClient).loggingEnabled != 0) {
+      ...renderParam("loggingEnabled", (node as PVClient).loggingEnabled)
+    }
+    when ((node as PVClient).retryCount != null && (node as PVClient).retryCount != 100) {
+      ...renderParam("retryCount", (node as PVClient).retryCount)
+    }
+    when ((node as PVClient).timeout != null && (node as PVClient).timeout != 2500) {
+      ...renderParam("timeout", (node as PVClient).timeout)
+    }
+    when ((node as PVClient).description != null) {
+      ...renderParam("description", (node as PVClient).description)
+    }
+    when ((node as PVClient).hLookup != null) {
+      ...renderParam("hLookup", (node as PVClient).hLookup)
+    }
+    when ((node as PVClient).hConnector != null) {
+      ...renderParam("hConnector", (node as PVClient).hConnector!!.map((it) -> it.name).join(";"))
+    }
+    when ((node as PVClient).hSubProcess != null) {
+      ...renderParam("hSubProcess", (node as PVClient).hSubProcess)
+    }
+    when ((node as PVClient).resendAfterReconnect != null && (node as PVClient).resendAfterReconnect != 1) {
+      ...renderParam("resendAfterReconnect", (node as PVClient).resendAfterReconnect)
+    }
+    when ((node as PVClient).useBinaryResponse != null) {
+      ...renderParam("useBinaryResponse", (node as PVClient).useBinaryResponse)
+    }
+    when ((node as PVClient).useBigPacket != null) {
+      ...renderParam("useBigPacket", (node as PVClient).useBigPacket)
+    }
+    when ((node as PVClient).isConnected != null) {
+      ...renderParam("isConnected", (node as PVClient).isConnected)
+    }
+    when ((node as PVClient).useFuturePacket != null) {
+      ...renderParam("useFuturePacket", (node as PVClient).useFuturePacket)
     }
   }
-  // Render type-specific parameters for PVClient
-  when (node is PVClient) {
-    ...getPVClientParams(node as PVClient)
-  }
-  // Render type-specific parameters for PVConsole
+
+  // Render type-specific properties for PVConsole
   when (node is PVConsole) {
-    ...getPVConsoleParams(node as PVConsole)
+    when ((node as PVConsole).hConnector != null) {
+      ...renderUnionParam("hConnector", (node as PVConsole).hConnector!!)
+    }
   }
 }
 
