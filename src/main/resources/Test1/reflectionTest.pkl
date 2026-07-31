@@ -1,0 +1,23 @@
+import "pkl:reflect"
+
+class Person {
+  firstName: String
+  lastName: String
+}
+
+p: Person = new {
+  firstName = "John"
+  lastName = "Doe"
+}
+
+// Get reflected class structure
+classMirror = reflect.Class(p.getClass())
+
+// Enumerate declared property names and types
+propertyNames = classMirror.properties.keys
+
+listing = new Listing {
+  for (name in propertyNames) {
+    p.getProperty(name)
+  }
+}

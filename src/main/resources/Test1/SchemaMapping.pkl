@@ -1,6 +1,7 @@
 module SpexConfig
 
 import "pkl:xml"
+import "pkl:reflect"
 
 configuration: Mapping<String, PVObject> = new {
   ["dev"] = new Dev {}
@@ -145,75 +146,32 @@ local function renderUnionParam(name: String, value: (String | Int | List<String
   }
 }
 
-/// Generic function to render properties of any PVObject
-/// Automatically renders non-null, non-default properties as <param> tags
-local function getParams(node: PVObject): Listing = new {
-  // Render base class properties
-  when (node.handle != 0) {
-    ...renderParam("handle", node.handle)
-  }
-  when (node.dimension != 0 && node.dimension != 1) {
-    ...renderParam("dimension", node.dimension)
-  }
-  when (node.forwardHandle != null) {
-    ...renderParam("forwardHandle", node.forwardHandle.toString())
-  }
-  when (node.gatewayHandle != null) {
-    ...renderParam("gatewayHandle", node.gatewayHandle)
-  }
+local function getProperties(node: PVObject) = reflect.Class(node.getClass()).properties
 
-  // Render type-specific properties for PVClient
-  when (node is PVClient) {
-    ...renderParam("port", (node as PVClient).port)
-    ...renderParam("hostName", (node as PVClient).hostName)
-    when ((node as PVClient).protocol != null) {
-      ...renderParam("protocol", (node as PVClient).protocol)
+/// Generic function to render properties of any PVObject using reflection
+/// Automatically iterates through all properties and renders non-null, non-default ones as <param> tags
+local function getParams(node: PVObject): Listing =
+  new {
+    when (node.handle != 0) {
+      ...renderParam("handle", node.handle)
     }
-    when ((node as PVClient).loggingEnabled != null && (node as PVClient).loggingEnabled != 0) {
-      ...renderParam("loggingEnabled", (node as PVClient).loggingEnabled)
+    when (node.dimension != 0 && node.dimension != 1) {
+      ...renderParam("dimension", node.dimension)
     }
-    when ((node as PVClient).retryCount != null && (node as PVClient).retryCount != 100) {
-      ...renderParam("retryCount", (node as PVClient).retryCount)
+    when (node.forwardHandle != null) {
+      ...renderParam("forwardHandle", node.forwardHandle.toString())
     }
-    when ((node as PVClient).timeout != null && (node as PVClient).timeout != 2500) {
-      ...renderParam("timeout", (node as PVClient).timeout)
+    when (node.gatewayHandle != null) {
+      ...renderParam("gatewayHandle", node.gatewayHandle)
     }
-    when ((node as PVClient).description != null) {
-      ...renderParam("description", (node as PVClient).description)
-    }
-    when ((node as PVClient).hLookup != null) {
-      ...renderParam("hLookup", (node as PVClient).hLookup)
-    }
-    when ((node as PVClient).hConnector != null) {
-      ...renderParam("hConnector", (node as PVClient).hConnector!!.map((it) -> it.name).join(";"))
-    }
-    when ((node as PVClient).hSubProcess != null) {
-      ...renderParam("hSubProcess", (node as PVClient).hSubProcess)
-    }
-    when ((node as PVClient).resendAfterReconnect != null && (node as PVClient).resendAfterReconnect != 1) {
-      ...renderParam("resendAfterReconnect", (node as PVClient).resendAfterReconnect)
-    }
-    when ((node as PVClient).useBinaryResponse != null) {
-      ...renderParam("useBinaryResponse", (node as PVClient).useBinaryResponse)
-    }
-    when ((node as PVClient).useBigPacket != null) {
-      ...renderParam("useBigPacket", (node as PVClient).useBigPacket)
-    }
-    when ((node as PVClient).isConnected != null) {
-      ...renderParam("isConnected", (node as PVClient).isConnected)
-    }
-    when ((node as PVClient).useFuturePacket != null) {
-      ...renderParam("useFuturePacket", (node as PVClient).useFuturePacket)
+
+    for (propName in getProperties(node).keys) {
+      when (!Set("name", "classType", "children", "handle", "dimension", "forwardHandle", "gatewayHandle").contains(propName)) {
+        ...renderParam("gatewayHandle", node.getProperty(propName))
+      }
     }
   }
 
-  // Render type-specific properties for PVConsole
-  when (node is PVConsole) {
-    when ((node as PVConsole).hConnector != null) {
-      ...renderUnionParam("hConnector", (node as PVConsole).hConnector!!)
-    }
-  }
-}
 
 /// Recursively converts the object tree into XML `<object>` elements.
 ///
