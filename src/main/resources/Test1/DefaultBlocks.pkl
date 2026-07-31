@@ -1,0 +1,15 @@
+module SpexConfig
+
+import  "SchemaMapping.pkl" as Schema
+
+function createDefaultProcs(suffix:String): Schema.Procs = new Schema.Procs {
+  children = new Mapping<String, Schema.PVObject> {
+    ["console\(suffix)"] = new Schema.PVConsole {
+      hConnector = "netConnector"
+    }
+  }
+}
+
+
+
+

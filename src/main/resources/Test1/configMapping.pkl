@@ -1,4 +1,7 @@
 amends "SchemaMapping.pkl"
+
+import "DefaultBlocks.pkl" as DefaultBlocks
+
 // ── Pass 1: base definition ──
 local config = new Mapping<String,PVObject> {
   ["dev"] = new Dev {
@@ -13,6 +16,9 @@ local config = new Mapping<String,PVObject> {
       }
     }
   }
+  for( i: Int in IntSeq(1, 3)) {
+    ["procs\(i)"] = DefaultBlocks.createDefaultProcs("\(i)")
+  }
 }
 // ── Pass 2: override existing values by amending the base ──
 // NOTE: use `["key"] { ... }` (amend), not `["key"] = new ...` (replace).
@@ -21,6 +27,11 @@ configuration = (config) {
   ["dev"] {
     children {
       ["pvClient2"] { port = 8000 }
+    }
+  }
+  ["procs2"] {
+    children {
+      ["console2"] { hConnector = List("netConnector","webSocket") }
     }
   }
 }
